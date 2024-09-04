@@ -43,9 +43,11 @@ public class Http {
             // 执行请求并获取响应
             try (CloseableHttpResponse response = httpClient.execute(post)) {
                 result = EntityUtils.toString(response.getEntity());
+            } catch (IOException e) {
+                throw new RuntimeException("获取响应时出现问题：",e);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("请求发送失败：",e);
         }
         return result;
     }
