@@ -1,4 +1,4 @@
-package fun.wsss.uio.utils;
+package fun.wsss.uio.Utils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

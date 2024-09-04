@@ -1,4 +1,4 @@
-package fun.wsss.uio.utils;
+package fun.wsss.uio.Utils;
 
 
 import org.apache.http.client.methods.CloseableHttpResponse;

@@ -8,3 +8,10 @@ spring:
     active: dev
   banner:
     location: banner.txt
+
+  datasource:
+    url: jdbc:mysql://wsssfun.rwlb.rds.aliyuncs.com:3306/springboot?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    username: wsssfun
+    password: Qwe!230528
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  # ↓ MyBatis-Plus
