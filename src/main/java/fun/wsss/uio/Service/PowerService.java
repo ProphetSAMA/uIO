@@ -8,9 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class PowerService {
+    Logger logger = Logger.getLogger(PowerService.class.getName());
     private final PowerMapper powerMapper;
 
     @Autowired
@@ -19,8 +21,9 @@ public class PowerService {
     }
 
     public ResponseEntity<List<Power>> getPowerValue() {
-        QueryWrapper<Power> queryWrapper = new QueryWrapper<>();
-        List<Power> powerList = powerMapper.selectList(queryWrapper);
+        logger.info("getPowerValue方法开始执行");
+        List<Power> powerList = powerMapper.selectList(null);
+        logger.info("getPowerValue方法执行结束");
         return ResponseEntity.ok(powerList);
     }
 }

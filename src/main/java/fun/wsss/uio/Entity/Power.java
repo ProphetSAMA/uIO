@@ -1,28 +1,37 @@
 package fun.wsss.uio.Entity;
 
 public class Power {
-    String powerValue;
-    String queryTime;
+    private Long id;
+    private String value;
+    private String querytime;
 
     // 构造方法
     public Power(String powerValue, String queryTime) {
-        this.powerValue = powerValue;
-        this.queryTime = queryTime;
+        this.value = powerValue;
+        this.querytime = queryTime;
     }
 
-    public String getPowerValue() {
-        return powerValue;
+    public Long getId() {
+        return id;
     }
 
-    public void setPowerValue(String powerValue) {
-        this.powerValue = powerValue;
+    public void setId(Long id) {
+        this.id = id;
     }
 
-    public String getQueryTime() {
-        return queryTime;
+    public String getValue() {
+        return value;
     }
 
-    public void setQueryTime(String queryTime) {
-        this.queryTime = queryTime;
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public String getQuerytime() {
+        return querytime;
+    }
+
+    public void setQuerytime(String querytime) {
+        this.querytime = querytime;
     }
 }
