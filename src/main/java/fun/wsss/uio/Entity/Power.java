@@ -1,7 +1,7 @@
 package fun.wsss.uio.Entity;
 
 public class Power {
-    private Long id;
+//    private Long id;
     private String value;
     private String querytime;
 
@@ -11,13 +11,13 @@ public class Power {
         this.querytime = queryTime;
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+//    public Long getId() {
+//        return id;
+//    }
+//
+//    public void setId(Long id) {
+//        this.id = id;
+//    }
 
     public String getValue() {
         return value;
