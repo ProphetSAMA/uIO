@@ -22,8 +22,15 @@ public class PowerControl {
     public PowerControl(PowerService powerService) {
         this.powerService = powerService;
     }
-    @GetMapping("/power")
-    public ResponseEntity<List<Power>> getPowerValues() {
-        return powerService.getPowerValue();
+    // 所有数据
+    @GetMapping("/all-power")
+    public ResponseEntity<List<Power>> selectAllPowerValues() {
+        return powerService.selectAllPowerValue();
     }
+    // 最新一条数据
+    @GetMapping("/latest-power")
+    public ResponseEntity<Power> getLatestPowerValue() {
+        return powerService.getLatestPowerValue();
+    }
+
 }

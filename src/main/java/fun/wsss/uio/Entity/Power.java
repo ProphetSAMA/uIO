@@ -6,8 +6,8 @@ public class Power {
     private String querytime;
 
     // 构造方法
-    public Power(String powerValue, String queryTime) {
-        this.value = powerValue;
+    public Power(Double powerValue, String queryTime) {
+        this.value = String.valueOf(powerValue);
         this.querytime = queryTime;
     }
 
