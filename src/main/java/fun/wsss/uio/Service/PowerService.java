@@ -1,34 +1,26 @@
 package fun.wsss.uio.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import fun.wsss.uio.Entity.Power;
-import fun.wsss.uio.Sql.SqlDAO;
+import fun.wsss.uio.Mapper.PowerMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
-import java.util.function.Function;
 
 @Service
 public class PowerService {
+    private final PowerMapper powerMapper;
 
-    private final SqlDAO sqlDAO;
-
-    public PowerService(SqlDAO sqlDAO) {
-        this.sqlDAO = sqlDAO;
+    @Autowired
+    public PowerService(PowerMapper powerMapper) {
+        this.powerMapper = powerMapper;
     }
 
     public ResponseEntity<List<Power>> getPowerValue() {
-        String sql = "SELECT power, querytime FROM powervaule";
-        Function<ResultSet, Power> mapper = rs -> {
-            try {
-                return new Power(rs.getString("power"), rs.getString("querytime"));
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        };
-        return sqlDAO.Select(sql, mapper);
+        QueryWrapper<Power> queryWrapper = new QueryWrapper<>();
+        List<Power> powerList = powerMapper.selectList(queryWrapper);
+        return ResponseEntity.ok(powerList);
     }
-
 }
