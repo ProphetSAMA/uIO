@@ -14,12 +14,12 @@ import java.util.List;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/api")
-public class PowerControl {
+public class PowerController {
 
     private final PowerService powerService;
 
     @Autowired
-    public PowerControl(PowerService powerService) {
+    public PowerController(PowerService powerService) {
         this.powerService = powerService;
     }
     // 所有数据
