@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.logging.Logger;
+
 @Service
 public class UserService {
     /**
@@ -13,6 +15,7 @@ public class UserService {
      * Author: Wsssfun
      * Date: 2024年9月8日 23点54分
      */
+    Logger logger = Logger.getLogger("UserService");
     @Autowired
     private UserMapper userMapper;
     @Autowired
@@ -25,6 +28,7 @@ public class UserService {
         }
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userMapper.insert(user);
+        logger.info("用户注册成功");
         return user;
     }
 
