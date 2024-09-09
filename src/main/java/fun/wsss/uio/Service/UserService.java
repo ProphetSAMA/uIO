@@ -42,6 +42,7 @@ public class UserService {
             throw new RuntimeException("用户不存在");
         }
 
+        logger.info("用户登录成功");
         return userMapper.findByUsername(username);
     }
 }
