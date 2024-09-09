@@ -1,6 +1,5 @@
 package fun.wsss.uio.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import fun.wsss.uio.Entity.Power;
 import fun.wsss.uio.Mapper.PowerMapper;
 import fun.wsss.uio.Utils.Http;
@@ -34,13 +33,18 @@ public class PowerService {
     }
 
     // 查询最新单条数据
-    public ResponseEntity<Power> getLatestPowerValue() {
+    public ResponseEntity<Double> getLatestPowerValue() {
         logger.info("getLatestPowerValue方法开始执行");
-        QueryWrapper<Power> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByDesc("querytime").last("LIMIT 1");
-        Power latestPower = powerMapper.selectOne(queryWrapper);
+//        QueryWrapper<Power> queryWrapper = new QueryWrapper<>();
+//        queryWrapper.orderByDesc("querytime").last("LIMIT 1");
+//        Power latestPower = powerMapper.selectOne(queryWrapper);
+
+        Http http = new Http();
+        Json json = new Json();
+        json.processResponse(http);
+        Double quantityStr = json.quantity;
         logger.info("getLatestPowerValue方法执行结束");
-        return ResponseEntity.ok(latestPower);
+        return ResponseEntity.ok(quantityStr);
     }
 
     // 新增数据

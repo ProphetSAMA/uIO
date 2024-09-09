@@ -29,7 +29,7 @@ public class PowerController {
     }
     // 最新一条数据
     @GetMapping("/latest-power")
-    public ResponseEntity<Power> getLatestPowerValue() {
+    public ResponseEntity<Double> getLatestPowerValue() {
         return powerService.getLatestPowerValue();
     }
 
