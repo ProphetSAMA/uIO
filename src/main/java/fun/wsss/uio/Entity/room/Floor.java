@@ -1,24 +1,42 @@
 package fun.wsss.uio.Entity.room;
 
-import java.util.List;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
+/**
+ * 楼层实体类
+ * @author Wsssfun
+ */
+@TableName("floors")
 public class Floor {
-    private String floorName;
-    private List<Room> rooms;
+    @TableId
+    private Long floorId;
+    private int floorNumber;
+    private Long buildingId;
 
-    public String getFloorName() {
-        return floorName;
+    // Getters and Setters
+
+    public Long getFloorId() {
+        return floorId;
     }
 
-    public void setFloorName(String floorName) {
-        this.floorName = floorName;
+    public void setFloorId(Long floorId) {
+        this.floorId = floorId;
     }
 
-    public List<Room> getRooms() {
-        return rooms;
+    public int getFloorNumber() {
+        return floorNumber;
     }
 
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
+    public void setFloorNumber(int floorNumber) {
+        this.floorNumber = floorNumber;
+    }
+
+    public Long getBuildingId() {
+        return buildingId;
+    }
+
+    public void setBuildingId(Long buildingId) {
+        this.buildingId = buildingId;
     }
 }

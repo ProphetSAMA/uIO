@@ -1,22 +1,27 @@
-package fun.wsss.uio.Service.impl;
+package fun.wsss.uio.Service.room.impl;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import fun.wsss.uio.Entity.room.Room;
-import fun.wsss.uio.Mapper.RoomMapper;
-import fun.wsss.uio.Service.IRoomService;
+import fun.wsss.uio.Mapper.room.RoomMapper;
+import fun.wsss.uio.Service.room.IRoomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 /**
- * 房间实现类
+ * 房间Service实现类
+ * @author Wsssfun
  */
 @Service
 public class RoomServiceImpl implements IRoomService {
     @Autowired
-    RoomMapper roomMapper;
+    private RoomMapper roomMapper;
+
+    @Override
+    public List<Room> getRoomsByFloorId(Long floorId) {
+        return roomMapper.selectList(new QueryWrapper<Room>().eq("floor_id", floorId));
+    }
+
     @Override
     public Room getRoom(Long id) {
         return null;
@@ -24,8 +29,6 @@ public class RoomServiceImpl implements IRoomService {
 
     @Override
     public List<Room> getRooms(Long id) {
-        Wrapper<Room> wrapper = new QueryWrapper<>();
-        ((QueryWrapper<Room>) wrapper).eq("parent_id", id);
-        return roomMapper.selectList(wrapper);
+        return List.of();
     }
 }

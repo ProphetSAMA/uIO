@@ -1,10 +1,27 @@
 package fun.wsss.uio.Entity.room;
 
-import java.util.List;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 
+/**
+ * 楼号实体类
+ * @author Wsssfun
+ */
+@TableName("buildings")
 public class Building {
+    @TableId
+    private Long buildingId;
     private String buildingName;
-    private List<Floor> floors;
+
+    // Getters and Setters
+
+    public Long getBuildingId() {
+        return buildingId;
+    }
+
+    public void setBuildingId(Long buildingId) {
+        this.buildingId = buildingId;
+    }
 
     public String getBuildingName() {
         return buildingName;
@@ -12,13 +29,5 @@ public class Building {
 
     public void setBuildingName(String buildingName) {
         this.buildingName = buildingName;
-    }
-
-    public List<Floor> getFloors() {
-        return floors;
-    }
-
-    public void setFloors(List<Floor> floors) {
-        this.floors = floors;
     }
 }

@@ -1,72 +1,60 @@
-package fun.wsss.uio.Controller;
-
-import fun.wsss.uio.Entity.room.Building;
-import fun.wsss.uio.Entity.room.Floor;
-import fun.wsss.uio.Entity.room.Room;
-import fun.wsss.uio.Service.IRoomService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-@RestController
-@RequestMapping("/api")
-public class RoomController {
-
-    @Autowired
-    private IRoomService roomService;
-    @GetMapping("/rooms")
-    public Map getRooms() {
-//        List<Building> buildings = new ArrayList<>();
-
-        List<Room> roomList =new ArrayList<>();
-        Map map=new HashMap();
-        Map map1=new HashMap();
-       List<Room> rooms= roomService.getRooms(0L);
-       List<Room> rooms1=new ArrayList<>();
-        Room room=new Room();
-        for (int i=0;i<rooms.size();i++){
-            roomList.addAll(roomService.getRooms(rooms.get(i).getRoomsId()));
-            rooms.get(i).setRooms(roomList);
-        }
-        map.put("rooms",rooms);
-
-
-        return map;
-
-//        // 生成33栋楼，每栋楼5个楼层，每个楼层22个房间
-//        for (int buildingNum = 1; buildingNum <= 2; buildingNum++) {
-//            Building building = new Building();
-//            building.setBuildingName(buildingNum + "号楼");
+//package fun.wsss.uio.Controller;
 //
-//            List<Floor> floors = new ArrayList<>();
-//            for (int floorNum = 1; floorNum <= 3; floorNum++) {
-//                Floor floor = new Floor();
-//                floor.setFloorName(floorNum + "层");
+//import fun.wsss.uio.Entity.room.Building;
+//import fun.wsss.uio.Entity.room.Room;
+//import fun.wsss.uio.Service.room.IBuildingService;
+//import fun.wsss.uio.Service.room.IRoomService;
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.web.bind.annotation.RequestMapping;
+//import org.springframework.web.bind.annotation.RequestParam;
+//import org.springframework.web.bind.annotation.RestController;
 //
-//                List<Room> rooms = new ArrayList<>();
-//                for (int roomNum = 1; roomNum <= 5; roomNum++) {
-//                    rooms.add(createRoom(buildingNum, floorNum, roomNum));
-//                }
-//                floor.setRooms(rooms);
-//                floors.add(floor);
-//            }
-//            building.setFloors(floors);
-//            buildings.add(building);
+//import java.util.List;
+//
+///**
+// * 房间Controller
+// * @author Wsssfun
+// */
+//@RestController
+//@RequestMapping("/api")
+//public class RoomController {
+//    public class BuildingController {
+//        @Autowired
+//        private IRoomService roomService;
+//
+//
+//        @GetMapping("/rooms")
+//        public List<Room> getRoomsByFloorId(@RequestParam Long floorId) {
+//            return roomService.getRoomsByFloorId(floorId);
 //        }
-
-
-    }
-
-//    private Room createRoom(int building, int floor, int room) {
-//        Room newRoom = new Room();
-//        newRoom.setRoom(Integer.parseInt(floor + String.format("%02d", room)));
-//        newRoom.setRoomsid((long) (building * 1000L + floor * 100L + room));
-//        return newRoom;
 //    }
-}
+//
+//
+////    @Autowired
+////    private IRoomService roomService;
+////
+////    @GetMapping("/rooms")
+////    public Map<String, List<Room>> getRooms() {
+////        Map<String, List<Room>> result = new HashMap<>();
+////        List<Room> rooms = roomService.getRooms(0L);
+////
+////        // 设置房间号
+////        for (Room room : rooms) {
+////            // 获取子房间
+////            List<Room> childRooms = roomService.getRooms(room.getRoomsId());
+////            for (Room childRoom : childRooms) {
+////                // 每个房间有5个房间号
+////                List<Integer> roomNumbers = new ArrayList<>();
+////                for (int i = 1; i <= 5; i++) {
+////                    roomNumbers.add(i);
+////                }
+////                childRoom.setRoomNumbers(roomNumbers);
+////            }
+////            room.setRooms(childRooms);
+////        }
+////        // 返回结果
+////        result.put("rooms", rooms);
+////        return result;
+////    }
+//}

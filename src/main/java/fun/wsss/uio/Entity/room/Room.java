@@ -3,47 +3,40 @@ package fun.wsss.uio.Entity.room;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 
-import java.util.List;
-
+/**
+ * 房间实体类
+ * @author Wsssfun
+ */
 @TableName("rooms")
 public class Room {
     @TableId
-    private Long roomsId;   //id
-    private String  roomName;   //名称
+    private Long roomId;
+    private int roomNumber;
+    private Long floorId;
 
-    private Long parentId;    //父级id
+    // Getters and Setters
 
-    public List<Room> getRooms() {
-        return rooms;
+    public Long getRoomId() {
+        return roomId;
     }
 
-    public void setRooms(List<Room> rooms) {
-        this.rooms = rooms;
+    public void setRoomId(Long roomId) {
+        this.roomId = roomId;
     }
 
-    private List <Room> rooms;
-
-    public Long getRoomsId() {
-        return roomsId;
+    public int getRoomNumber() {
+        return roomNumber;
     }
 
-    public void setRoomsId(Long roomsId) {
-        this.roomsId = roomsId;
+    public void setRoomNumber(int roomNumber) {
+        this.roomNumber = roomNumber;
     }
 
-    public String getRoomName() {
-        return roomName;
+    public Long getFloorId() {
+        return floorId;
     }
 
-    public void setRoomName(String roomName) {
-        this.roomName = roomName;
-    }
-
-    public Long getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(Long parentId) {
-        this.parentId = parentId;
+    public void setFloorId(Long floorId) {
+        this.floorId = floorId;
     }
 }
