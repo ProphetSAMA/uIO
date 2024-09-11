@@ -1,8 +1,8 @@
 package fun.wsss.uio.Controller;
 
 
-import fun.wsss.uio.Entity.Message;
-import fun.wsss.uio.Service.MessageService;
+import fun.wsss.uio.model.Message;
+import fun.wsss.uio.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

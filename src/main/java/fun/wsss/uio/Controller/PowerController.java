@@ -1,7 +1,7 @@
 package fun.wsss.uio.Controller;
 
-import fun.wsss.uio.Entity.Power;
-import fun.wsss.uio.Service.PowerService;
+import fun.wsss.uio.model.Power;
+import fun.wsss.uio.service.PowerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;

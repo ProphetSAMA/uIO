@@ -14,17 +14,11 @@ spring:
     username: wsssfun
     password: Qwe!230528
     driver-class-name: com.mysql.cj.jdbc.Driver
-#Redis配置
-#  data:
-#    redis:
-#      database: 0
-#      host: 117.72.10.41
-#      port: 6379
-#      timeout: 5000
-#      password: qwe123
-#      lettuce:
-#        pool:
-#          max-active: 32
-#          max-wait: -1
-#          max-idle: 16
-#          min-idle: 8
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto

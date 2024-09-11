@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@MapperScan("fun.wsss.uio.Mapper")
+@MapperScan("fun.wsss.uio.mapper")
 @EnableScheduling
 public class UIoApplication {
 

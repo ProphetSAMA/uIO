@@ -1,6 +1,6 @@
 package fun.wsss.uio.Utils;
 
-import fun.wsss.uio.Service.PowerService;
+import fun.wsss.uio.service.PowerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.scheduling.annotation.Scheduled;

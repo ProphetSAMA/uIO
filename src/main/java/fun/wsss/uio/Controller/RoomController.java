@@ -1,60 +1,41 @@
-//package fun.wsss.uio.Controller;
-//
-//import fun.wsss.uio.Entity.room.Building;
-//import fun.wsss.uio.Entity.room.Room;
-//import fun.wsss.uio.Service.room.IBuildingService;
-//import fun.wsss.uio.Service.room.IRoomService;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.web.bind.annotation.GetMapping;
-//import org.springframework.web.bind.annotation.RequestMapping;
-//import org.springframework.web.bind.annotation.RequestParam;
-//import org.springframework.web.bind.annotation.RestController;
-//
-//import java.util.List;
-//
-///**
-// * 房间Controller
-// * @author Wsssfun
-// */
-//@RestController
-//@RequestMapping("/api")
-//public class RoomController {
-//    public class BuildingController {
-//        @Autowired
-//        private IRoomService roomService;
-//
-//
-//        @GetMapping("/rooms")
-//        public List<Room> getRoomsByFloorId(@RequestParam Long floorId) {
-//            return roomService.getRoomsByFloorId(floorId);
-//        }
-//    }
-//
-//
-////    @Autowired
-////    private IRoomService roomService;
-////
-////    @GetMapping("/rooms")
-////    public Map<String, List<Room>> getRooms() {
-////        Map<String, List<Room>> result = new HashMap<>();
-////        List<Room> rooms = roomService.getRooms(0L);
-////
-////        // 设置房间号
-////        for (Room room : rooms) {
-////            // 获取子房间
-////            List<Room> childRooms = roomService.getRooms(room.getRoomsId());
-////            for (Room childRoom : childRooms) {
-////                // 每个房间有5个房间号
-////                List<Integer> roomNumbers = new ArrayList<>();
-////                for (int i = 1; i <= 5; i++) {
-////                    roomNumbers.add(i);
-////                }
-////                childRoom.setRoomNumbers(roomNumbers);
-////            }
-////            room.setRooms(childRooms);
-////        }
-////        // 返回结果
-////        result.put("rooms", rooms);
-////        return result;
-////    }
-//}
+package fun.wsss.uio.Controller;
+
+import fun.wsss.uio.model.Room;
+import fun.wsss.uio.service.RoomService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+/**
+ * @author Wsssfun
+ * @Data localhost:8080/rooms?buildingId=2&floorId=3
+ */
+
+
+@RestController
+@RequestMapping("/rooms")
+public class RoomController {
+
+    @Autowired
+    private RoomService roomService;
+
+    @GetMapping
+    public ResponseEntity<List<Room>> getRooms(@RequestParam(value = "buildingId", required = false) Integer buildingId, @RequestParam(value = "floorId", required = false) Integer floorId) {
+
+        if (buildingId == null || floorId == null) {
+            // 处理参数缺失的情况
+            return ResponseEntity.badRequest().body(null);
+        }
+        List<Room> rooms = roomService.getRoomsByBuildingAndFloor(buildingId, floorId);
+
+        return ResponseEntity.ok(rooms);
+    }
+
+}
+
+

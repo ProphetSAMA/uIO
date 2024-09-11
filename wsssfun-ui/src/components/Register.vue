@@ -1,120 +1,201 @@
 <template>
-  <div id="register">
-    <form @submit.prevent="register">
-      <el-input v-model="state.username" placeholder="用户名" clearable></el-input>
-      <el-input v-model="state.password" :type="showPassword ? 'text' : 'password'" placeholder="密码" clearable :suffix-icon="showPassword ? 'el-icon-view' : 'el-icon-view-off'" @click-suffix="showPassword = !showPassword"></el-input>
-      <el-input v-model="state.confirmPassword" :type="showPassword ? 'text' : 'password'" placeholder="确认密码" clearable :suffix-icon="showPassword ? 'el-icon-view' : 'el-icon-view-off'" @click-suffix="showPassword = !showPassword"></el-input>
-      <el-cascader v-model="selectedValue" :options="cascaderOptions" placeholder="请选择"></el-cascader>
-      <el-button type="primary" @click="register">注册</el-button>
-      <el-button @click="clear">清空</el-button>
-    </form>
-  </div>
+  <el-form :model="form" ref="formRef" label-width="120px" @submit.native.prevent="handleSubmit">
+    <el-form-item label="Username" prop="username" :rules="usernameRules">
+      <el-input v-model="form.username" autocomplete="off" />
+    </el-form-item>
+
+    <el-form-item label="Password" prop="password" :rules="passwordRules">
+      <el-input type="password" v-model="form.password" autocomplete="off" />
+    </el-form-item>
+
+    <el-form-item label="Confirm Password" prop="confirmPassword" :rules="confirmPasswordRules">
+      <el-input type="password" v-model="form.confirmPassword" autocomplete="off" />
+    </el-form-item>
+
+    <!-- Building Selection -->
+    <el-form-item label="Building" prop="buildingId">
+      <el-select v-model="form.buildingId" placeholder="Select Building" @change="onBuildingChange">
+        <el-option
+            v-for="building in buildings"
+            :key="building.id"
+            :label="building.name"
+            :value="building.id"
+        />
+      </el-select>
+    </el-form-item>
+
+    <!-- Floor Selection -->
+    <el-form-item label="Floor" prop="floorId">
+      <el-select v-model="form.floorId" placeholder="Select Floor" @change="onFloorChange" :disabled="!floors.length">
+        <el-option
+            v-for="floor in floors"
+            :key="floor.id"
+            :label="floor.name"
+            :value="floor.id"
+        />
+      </el-select>
+    </el-form-item>
+
+    <!-- Room Selection -->
+    <el-form-item label="Room" prop="roomId">
+      <el-select v-model="form.roomId" placeholder="Select Room" :disabled="!rooms.length">
+        <el-option
+            v-for="room in rooms"
+            :key="room.id"
+            :label="room.name"
+            :value="room.id"
+        />
+      </el-select>
+    </el-form-item>
+
+    <el-form-item>
+      <el-button type="primary" @click="handleSubmit">Register</el-button>
+      <el-button @click="handleReset">Reset</el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
 <script>
+import { ref, onMounted } from 'vue';
 import axios from 'axios';
+import { ElForm } from 'element-plus';
 
 export default {
-  name: 'RegisterForm',
-  data() {
-    return {
-      state: {
-        username: '',
-        password: '',
-        confirmPassword: ''
+  components: {
+    ElForm,
+  },
+  setup() {
+    const form = ref({
+      username: '',
+      password: '',
+      confirmPassword: '',
+      buildingId: null,
+      floorId: null,
+      roomId: null,
+    });
+
+    const formRef = ref(null);
+    const buildings = ref([]);
+    const floors = ref([]);
+    const rooms = ref([]);
+
+    // Form validation rules
+    const usernameRules = [
+      { required: true, message: 'Please input your username', trigger: 'blur' },
+    ];
+
+    const passwordRules = [
+      { required: true, message: 'Please input your password', trigger: 'blur' },
+    ];
+
+    const confirmPasswordRules = [
+      { required: true, message: 'Please confirm your password', trigger: 'blur' },
+      {
+        validator: (rule, value, callback) => {
+          if (value !== form.value.password) {
+            callback(new Error('Passwords do not match'));
+          } else {
+            callback();
+          }
+        },
+        trigger: 'blur',
       },
-      showPassword: false,
-      selectedValue: [],
-      cascaderOptions: []
+    ];
+
+    // Fetch buildings on component mount
+    onMounted(async () => {
+      try {
+        const response = await axios.get('http://localhost:8080/api/buildings');
+        buildings.value = response.data;
+      } catch (error) {
+        console.error('Error fetching buildings:', error);
+      }
+    });
+
+    // Fetch floors when building changes
+    const onBuildingChange = async (buildingId) => {
+      if (buildingId) {
+        try {
+          // Clear previously selected floor and room
+          form.value.floorId = null;
+          form.value.roomId = null;
+          floors.value = [];
+          rooms.value = [];
+
+          // Fetch floors based on selected building
+          const response = await axios.get('http://localhost:8080/api/floors', {
+            params: { buildingId },
+          });
+          floors.value = response.data;
+        } catch (error) {
+          console.error('Error fetching floors:', error);
+        }
+      }
+    };
+
+    // Fetch rooms when floor changes
+    const onFloorChange = async (floorId) => {
+      if (floorId && form.value.buildingId) {
+        try {
+          // Clear previously selected room
+          form.value.roomId = null;
+          rooms.value = [];
+
+          // Fetch rooms based on selected building and floor
+          const response = await axios.get('http://localhost:8080/api/rooms', {
+            params: { buildingId: form.value.buildingId, floorId },
+          });
+          rooms.value = response.data;
+        } catch (error) {
+          console.error('Error fetching rooms:', error);
+        }
+      }
+    };
+
+    // Handle form submission
+    const handleSubmit = async () => {
+      try {
+        // Validate form
+        await formRef.value.validate();
+
+        // Submit form data
+        const response = await axios.post('http://localhost:8080/api/register', form.value);
+
+        // Handle successful registration
+        console.log('Registration successful:', response.data);
+        // Redirect or show success message here
+      } catch (error) {
+        console.error('Registration error:', error);
+        // Handle registration error here
+      }
+    };
+
+    // Reset form fields
+    const handleReset = () => {
+      formRef.value.resetFields();
+      buildings.value = [];
+      floors.value = [];
+      rooms.value = [];
+    };
+
+    return {
+      form,
+      formRef,
+      buildings,
+      floors,
+      rooms,
+      usernameRules,
+      passwordRules,
+      confirmPasswordRules,
+      onBuildingChange,
+      onFloorChange,
+      handleSubmit,
+      handleReset,
     };
   },
-  methods: {
-    async register() {
-      if (this.state.password !== this.state.confirmPassword) {
-        alert('密码不匹配');
-        return;
-      }
-
-      try {
-        const response = await axios.post('http://localhost:8080/api/auth/register', {
-          username: this.state.username,
-          password: this.state.password,
-          roomId: this.selectedValue[this.selectedValue.length - 1]
-        });
-        console.log('注册成功', response.data);
-      } catch (error) {
-        console.error('注册失败', error);
-      }
-    },
-    clear() {
-      this.state.username = '';
-      this.state.password = '';
-      this.state.confirmPassword = '';
-      this.selectedValue = [];
-    },
-    async fetchBuildings() {
-      try {
-        const buildings = await axios.get('http://localhost:8080/api/buildings');
-        this.cascaderOptions = this.transformData(buildings.data);
-      } catch (error) {
-        console.error('获取楼号数据失败', error);
-      }
-    },
-    async fetchFloors(buildingId) {
-      try {
-        const floors = await axios.get('http://localhost:8080/api/floors', {
-          params: {buildingId}
-        });
-        return floors.data;
-      } catch (error) {
-        console.error('获取楼层数据失败', error);
-        return [];
-      }
-    },
-    async fetchRooms(floorId) {
-      try {
-        const rooms = await axios.get('http://localhost:8080/api/rooms', {
-          params: {floorId}
-        });
-        return rooms.data;
-      } catch (error) {
-        console.error('获取房间数据失败', error);
-        return [];
-      }
-    },
-    async transformData(data) {
-      const transformedData = await Promise.all(data.map(async (building) => {
-        const floors = await this.fetchFloors(building.buildingId);
-        return {
-          value: building.buildingId,
-          label: building.buildingName,
-          children: await Promise.all(floors.map(async (floor) => {
-            const rooms = await this.fetchRooms(floor.floorId);
-            return {
-              value: floor.floorId,
-              label: `第${floor.floorNumber}层`,
-              children: rooms.map((room) => ({
-                value: room.roomId,
-                label: `房间${room.roomNumber}`
-              }))
-            };
-          }))
-        };
-      }));
-      return transformedData;
-    }
-  },
-  mounted() {
-    this.fetchBuildings();
-  }
 };
 </script>
 
-<style>
-#register {
-  margin-top: 100px;
-  max-width: 400px;
-  margin-left: auto;
-  margin-right: auto;
-}
+<style scoped>
+/* Add any additional styling here */
 </style>
