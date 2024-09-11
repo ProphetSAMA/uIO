@@ -23,7 +23,6 @@ public class PowerService {
         this.powerMapper = powerMapper;
     }
 
-
     // 查询所有数据库
     public ResponseEntity<List<Power>> selectAllPowerValue() {
         logger.info("getPowerValue方法开始执行");
@@ -35,9 +34,6 @@ public class PowerService {
     // 查询最新单条数据
     public ResponseEntity<Double> getLatestPowerValue() {
         logger.info("getLatestPowerValue方法开始执行");
-//        QueryWrapper<Power> queryWrapper = new QueryWrapper<>();
-//        queryWrapper.orderByDesc("querytime").last("LIMIT 1");
-//        Power latestPower = powerMapper.selectOne(queryWrapper);
 
         Http http = new Http();
         Json json = new Json();

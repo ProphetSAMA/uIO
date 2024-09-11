@@ -7,16 +7,17 @@ import com.baomidou.mybatisplus.annotation.TableName;
 @TableName("user")
 public class User {
     @TableId(type = IdType.AUTO)
-    private Long id;
+    private Long userid;
     private String username;
     private String password;
+    private Long roomsid;
 
-    public Long getId() {
-        return id;
+    public Long getUserid() {
+        return userid;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserid(Long userid) {
+        this.userid = userid;
     }
 
     public String getUsername() {
@@ -33,5 +34,13 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Long getRoomsid() {
+        return roomsid;
+    }
+
+    public void setRoomsid(Long roomsid) {
+        this.roomsid = roomsid;
     }
 }
