@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * 房间Controller
+ *
  * @author Wsssfun
  */
 @RestController
@@ -32,8 +34,12 @@ public class RoomController {
     @Autowired
     private RoomService roomService;
 
+    /**
+     * 获取房间列表
+     *
+     * @return 房间列表
+     */
     @GetMapping
-
     public List<Map<String, Object>> getRooms() {
         List<Building> buildings = buildingService.getAllBuildings();
         List<Map<String, Object>> result = new ArrayList<>();

@@ -13,6 +13,7 @@ import java.util.List;
 
 /**
  * 电量Controller
+ *
  * @author Wsssfun
  */
 @RestController
@@ -26,16 +27,20 @@ public class PowerController {
     public PowerController(PowerService powerService) {
         this.powerService = powerService;
     }
+
     /**
      * 查询所有电量数据
+     *
      * @return 电量数据列表
      */
     @GetMapping("/all-power")
     public ResponseEntity<List<Power>> selectAllPowerValues() {
         return powerService.selectAllPowerValue();
     }
+
     /**
      * 查询最新电量数据
+     *
      * @return 最新电量数据
      */
     @GetMapping("/latest-power")

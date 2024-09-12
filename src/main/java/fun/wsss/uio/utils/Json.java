@@ -5,10 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
 
+/**
+ * JSON工具类
+ *
+ * @author Wsssfun
+ */
 public class Json {
     public Double quantity;
 
-    // 初始化ObjectMapper对象，用于解析JSON
     final ObjectMapper objectMapper = new ObjectMapper();
 
     /**

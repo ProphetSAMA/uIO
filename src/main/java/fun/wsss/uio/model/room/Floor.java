@@ -7,6 +7,7 @@ import lombok.Setter;
 
 /**
  * 楼层实体类
+ *
  * @author Wsssfun
  */
 @Setter

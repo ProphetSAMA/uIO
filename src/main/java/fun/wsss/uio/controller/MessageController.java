@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * 消息Controller
+ *
  * @author Wsssfun
  */
 @RestController
@@ -26,14 +27,17 @@ public class MessageController {
 
     /**
      * 获取留言
+     *
      * @return 留言列表
      */
     @GetMapping("/message")
     public ResponseEntity<List<Message>> getMessage() {
         return messageService.getMessage();
     }
+
     /**
      * 新增留言
+     *
      * @param message 留言
      * @return 保存结果
      */

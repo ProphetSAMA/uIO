@@ -5,10 +5,12 @@ import fun.wsss.uio.model.user.User;
 import fun.wsss.uio.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 /**
  * 用户Service实现类
+ *
  * @author Wsssfun
  */
 @Service
@@ -17,6 +19,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
+    /**
+     * 用户注册
+     *
+     * @param username     用户名
+     * @param password     密码
+     * @param selectedRoom 选择的房间
+     */
     @Override
     public void register(String username, String password, List<Integer> selectedRoom) {
         // 确保 selectedRoom 至少有三个值

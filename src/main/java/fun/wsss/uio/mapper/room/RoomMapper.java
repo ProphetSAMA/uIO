@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 房间Mapper接口
+ *
  * @author Wsssfun
  */
 @Mapper

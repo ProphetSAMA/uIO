@@ -14,6 +14,7 @@ import java.time.Duration;
 
 /**
  * Redis配置类
+ *
  * @author Wsssfun
  */
 @Configuration
@@ -22,6 +23,7 @@ public class RedisConfig {
 
     /**
      * Redis缓存配置
+     *
      * @return RedisCacheConfiguration
      */
     @Bean
@@ -34,6 +36,7 @@ public class RedisConfig {
 
     /**
      * RedisTemplate配置
+     *
      * @param redisConnectionFactory Redis连接工厂
      * @return RedisTemplate
      */

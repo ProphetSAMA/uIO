@@ -11,6 +11,7 @@ import java.util.List;
 
 /**
  * 楼栋Service实现类
+ *
  * @author Wsssfun
  */
 @Service
@@ -20,10 +21,11 @@ public class BuildingServiceImpl implements BuildingService {
     private BuildingMapper buildingMapper;
 
     /**
-     * 获取所有楼栋列表
+     * 获取所有楼栋
+     *
      * @return 楼栋列表
      */
-    @Cacheable(value = "buildings")
+    @Cacheable(value = "buildingCache")
     @Override
     public List<Building> getAllBuildings() {
         return buildingMapper.selectList(null);

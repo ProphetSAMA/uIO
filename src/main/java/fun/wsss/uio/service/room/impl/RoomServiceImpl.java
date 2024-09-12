@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * 房间Service实现类
+ *
  * @author Wsssfun
  */
 @Service
@@ -20,7 +21,13 @@ public class RoomServiceImpl implements RoomService {
     @Autowired
     private RoomMapper roomMapper;
 
-    @Cacheable(value = "buildingCache", key = "#floorId")
+    /**
+     * 根据楼层ID获取房间列表
+     *
+     * @param floorId 楼层ID
+     * @return 房间列表
+     */
+    @Cacheable(value = "roomCache", key = "#floorId")
     @Override
     public List<Room> getRoomsByFloorId(int floorId) {
         QueryWrapper<Room> wrapper = new QueryWrapper<>();

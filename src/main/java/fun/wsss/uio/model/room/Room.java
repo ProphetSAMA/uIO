@@ -7,6 +7,7 @@ import lombok.Setter;
 
 /**
  * 房间实体类
+ *
  * @author Wsssfun
  */
 @Getter

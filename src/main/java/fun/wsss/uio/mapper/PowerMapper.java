@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 /**
  * 权限Mapper接口
+ *
  * @author Wsssfun
  */
 @Mapper

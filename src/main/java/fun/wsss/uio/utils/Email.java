@@ -8,6 +8,11 @@ import javax.mail.internet.MimeMessage;
 import java.security.GeneralSecurityException;
 import java.util.Properties;
 
+/**
+ * 邮件工具类
+ *
+ * @author Wsssfun
+ */
 public class Email {
     private final Session session;
 
@@ -35,6 +40,13 @@ public class Email {
         }
     }
 
+    /**
+     * 发送邮件
+     *
+     * @param to      收件人
+     * @param subject 主题
+     * @param content 内容
+     */
     public void sendEmail(String to, String subject, String content) {
         try {
             MimeMessage mimeMessage = new MimeMessage(session);

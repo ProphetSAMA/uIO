@@ -13,6 +13,7 @@ import java.util.Map;
 
 /**
  * 用户Controller
+ *
  * @author Wsssfun
  */
 @RestController
@@ -22,6 +23,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    /**
+     * 用户注册
+     *
+     * @param requestBody 请求体
+     * @return 注册结果
+     */
     @PostMapping("/register")
     public ResponseEntity<String> register(@RequestBody Map<String, Object> requestBody) {
         String username = (String) requestBody.get("username");

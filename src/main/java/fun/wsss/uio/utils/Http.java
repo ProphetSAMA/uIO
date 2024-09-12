@@ -10,15 +10,23 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 
+/**
+ * 发送HTTP请求的工具类
+ *
+ * @author Wsssfun
+ */
 public class Http {
     public final String response;
 
-    // 构造函数 发送POST请求并获取响应
     public Http() {
         response = sendPostRequest();
     }
 
-    // 发送POST请求并返回响应内容
+    /**
+     * 发送POST请求
+     *
+     * @return 响应
+     */
     private String sendPostRequest() {
         String result;
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
@@ -44,10 +52,10 @@ public class Http {
             try (CloseableHttpResponse response = httpClient.execute(post)) {
                 result = EntityUtils.toString(response.getEntity());
             } catch (IOException e) {
-                throw new RuntimeException("获取响应时出现问题：",e);
+                throw new RuntimeException("获取响应时出现问题：", e);
             }
         } catch (IOException e) {
-            throw new RuntimeException("请求发送失败：",e);
+            throw new RuntimeException("请求发送失败：", e);
         }
         return result;
     }

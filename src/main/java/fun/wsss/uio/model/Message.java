@@ -7,6 +7,7 @@ import lombok.Setter;
 
 /**
  * 留言实体类
+ *
  * @author Wsssfun
  */
 @Setter

@@ -1,7 +1,7 @@
 package fun.wsss.uio.service;
 
-import fun.wsss.uio.model.Power;
 import fun.wsss.uio.mapper.PowerMapper;
+import fun.wsss.uio.model.Power;
 import fun.wsss.uio.utils.Http;
 import fun.wsss.uio.utils.Json;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 /**
  * 电量Service
+ *
  * @author Wsssfun
  */
 @Service
@@ -26,8 +27,10 @@ public class PowerService {
     public PowerService(PowerMapper powerMapper) {
         this.powerMapper = powerMapper;
     }
+
     /**
      * 查询所有数据
+     *
      * @return 所有数据
      */
     public ResponseEntity<List<Power>> selectAllPowerValue() {
@@ -39,6 +42,7 @@ public class PowerService {
 
     /**
      * 查询最新数据
+     *
      * @return 最新数据
      */
     public ResponseEntity<Double> getLatestPowerValue() {

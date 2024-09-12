@@ -5,6 +5,7 @@ import lombok.Setter;
 
 /**
  * 电量实体类
+ *
  * @author Wsssfun
  */
 @Setter

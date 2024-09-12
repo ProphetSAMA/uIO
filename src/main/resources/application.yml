@@ -8,7 +8,7 @@ spring:
     active: dev
   banner:
     location: banner.txt
-#数据库配置
+  #数据库配置
   datasource:
     url: jdbc:mysql://wsssfun.rwlb.rds.aliyuncs.com:3306/springboot?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
     username: wsssfun

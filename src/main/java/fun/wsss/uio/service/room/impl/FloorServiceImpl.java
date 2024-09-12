@@ -12,6 +12,7 @@ import java.util.List;
 
 /**
  * 楼层Service实现类
+ *
  * @author Wsssfun
  */
 @Service
@@ -21,11 +22,12 @@ public class FloorServiceImpl implements FloorService {
     private FloorMapper floorMapper;
 
     /**
-     * 根据建筑ID获取楼层列表
-     * @param buildingId 建筑ID
+     * 根据楼栋ID获取楼层列表
+     *
+     * @param buildingId 楼栋ID
      * @return 楼层列表
      */
-    @Cacheable(value = "floors", key = "#buildingId")
+    @Cacheable(value = "floorCache", key = "#buildingId")
     @Override
     public List<Floor> getFloorsByBuildingId(int buildingId) {
         QueryWrapper<Floor> wrapper = new QueryWrapper<>();
