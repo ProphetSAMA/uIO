@@ -8,6 +8,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * 消息Service
+ * @author Wsssfun
+ */
 @Service
 public class MessageService {
     private final MessageMapper messageMapper;
@@ -17,12 +21,18 @@ public class MessageService {
         this.messageMapper = messageMapper;
     }
 
+    /**
+     * 获取数据
+     */
     public ResponseEntity<List<Message>> getMessage() {
         List<Message> messageList = messageMapper.selectList(null);
         return ResponseEntity.ok(messageList);
     }
 
 
+    /**
+     * 插入数据
+     */
     public ResponseEntity<String> addMessage(Message message) {
         messageMapper.insert(message);
         return ResponseEntity.ok("成功");

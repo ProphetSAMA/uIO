@@ -1,8 +1,16 @@
 package fun.wsss.uio.model;
 
 import com.baomidou.mybatisplus.annotation.TableName;
-import fun.wsss.uio.Utils.Time;
+import fun.wsss.uio.utils.Time;
+import lombok.Getter;
+import lombok.Setter;
 
+/**
+ * 留言实体类
+ * @author Wsssfun
+ */
+@Setter
+@Getter
 @TableName("message")
 public class Message {
     private String content;
@@ -16,27 +24,4 @@ public class Message {
         this.time = Time.getTime();
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 }
