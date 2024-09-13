@@ -27,7 +27,7 @@ public class Http {
      *
      * @return 响应
      */
-    private String sendPostRequest() {
+    public String sendPostRequest() {
         String result;
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             // 创建一个HttpPost对象并设置请求的URL
