@@ -5,7 +5,7 @@
 😘这是一个⚡宿舍电费查询⚡项目，主要功能是查询宿舍电费  
 😁可在注册时使用级联选择器选择具体的宿舍，也可以在个人信息中修改  
 😊用户可以通过该平台查询自己的电费余额，以及查询电费的消耗情况  
-👌信息每小时更新一次，并且有详细的数据表格和直观的折线图 
+👌信息每小时更新一次，并且有详细的📊数据表格和直观的📈折线图 
 
 😎该项目旨在方便用户查询自己的电费信息，免去繁琐的操作
 
@@ -25,7 +25,7 @@
 ## 技术栈
 
 - **后端**: Spring Boot, MyBatis-Plus, MySQL, Redis
-- **前端**: Vue.js, Element-Plus, Axios, Vue Router
+- **前端**: Vue.js, Element-Plus,VChar,VTable , Axios, Vue Router
 - **构建工具**: Maven, Webpack
 - **其他**: Lombok, Log4j, Git
 
