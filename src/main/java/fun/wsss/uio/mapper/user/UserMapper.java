@@ -8,6 +8,8 @@ import org.apache.ibatis.annotations.Select;
 
 /**
  * 用户Mapper接口
+ *
+ * @author Wsssfun
  */
 @Mapper
 public interface UserMapper {

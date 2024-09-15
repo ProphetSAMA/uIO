@@ -2,6 +2,7 @@ package fun.wsss.uio.controller;
 
 import fun.wsss.uio.dto.user.UserDTO;
 
+import fun.wsss.uio.mapper.user.UserMapper;
 import fun.wsss.uio.model.user.User;
 import fun.wsss.uio.service.user.UserService;
 import fun.wsss.uio.utils.RoomFormatUtil;
@@ -27,6 +28,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserMapper userMapper;
 
     /**
      * 用户注册
@@ -41,6 +44,9 @@ public class UserController {
         @SuppressWarnings("unchecked")
         List<Integer> selectedRoom = (List<Integer>) requestBody.get("selectedRoom");
 
+        if (userMapper.findByUsername(username) != null) {
+            return ResponseEntity.status(400).body("用户名已存在");
+        }
         userService.register(username, password, selectedRoom);
 
         return ResponseEntity.ok("用户注册成功");

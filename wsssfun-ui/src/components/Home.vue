@@ -1,23 +1,39 @@
-<!-- src/views/Home.vue -->
 <template>
   <el-container class="home-container">
     <el-header>
-      <h1>Welcome to Home</h1>
+      <h1>首页</h1>
     </el-header>
     <el-main>
-      <p>You are logged in!</p>
-      <el-button type="danger" @click="logout">Logout</el-button>
+      <p>成功登录</p>
+      <el-button type="danger" @click="logout">退出登录</el-button>
     </el-main>
   </el-container>
 </template>
 
 <script>
+import {useUserStore} from '../store/user.js';
+import {useRouter} from 'vue-router';
+
 export default {
-  methods: {
-    logout() {
-      localStorage.removeItem('token'); // 删除 JWT 令牌
-      this.$router.push('/login'); // 退出后重定向到登录页面
-    }
+  setup() {
+    // 使用 useUserStore 和 useRouter 获取全局状态和路由对象
+    const userStore = useUserStore();
+    const router = useRouter();
+
+    const logout = () => {
+      // 清除 localStorage 中的 token
+      localStorage.removeItem('token');
+
+      // 更新全局状态，恢复为未登录状态
+      userStore.logout();
+
+      // 使用 router.push 进行路由跳转
+      router.push('/login');
+    };
+
+    return {
+      logout // 将 logout 返回到模板中
+    };
   }
 };
 </script>
@@ -31,7 +47,7 @@ export default {
 }
 
 .el-header {
-  background-color: #409EFF;
+  background-color: #4000FF;
   color: white;
   padding: 20px 0;
 }
