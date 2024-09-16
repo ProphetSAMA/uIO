@@ -17,6 +17,8 @@
     "vue-router": "^4.4.4"
   },
   "devDependencies": {
+    "@types/axios": "^0.9.36",
+    "@types/vue-router": "^2.0.0",
     "@vitejs/plugin-vue": "^5.1.2",
     "sass-embedded": "^1.78.0",
     "typescript": "^5.5.3",

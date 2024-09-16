@@ -1,0 +1,12 @@
+.small-notification .el-notification__group {
+    font-size: 12px; /* 控制字体大小 */
+}
+
+.small-notification .el-notification__title {
+    font-size: 14px; /* 控制标题大小 */
+}
+
+.small-notification {
+    width: 250px; /* 控制通知的整体宽度 */
+    padding: 16px; /* 控制内边距 */
+}

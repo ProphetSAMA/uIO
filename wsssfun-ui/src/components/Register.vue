@@ -5,71 +5,122 @@
         <el-input v-model="formData.username" placeholder="请输入用户名"></el-input>
       </el-form-item>
       <el-form-item label="密码">
-        <el-input v-model="formData.password" type="password" placeholder="请输入密码"></el-input>
+        <el-input v-model="formData.password" placeholder="请输入密码" type="password"></el-input>
       </el-form-item>
       <el-form-item label="选择房间">
         <el-cascader
             v-model="formData.selectedRoom"
-            :options="rooms"
-            placeholder="请选择房间"
+            :options="roomStore.rooms"
             :props="{ expandTrigger: 'hover' }"
+            placeholder="请选择房间"
         ></el-cascader>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm">提交注册</el-button>
+        <p>
+          <el-link class="login-text" type="primary" @click="$router.push('/login')">返回登陆</el-link>
+        </p>
       </el-form-item>
     </el-form>
   </div>
 </template>
 
 <script>
+import {ref, onMounted} from 'vue';
+import {useRoomStore} from '../store/roomStore.js';
 import axios from 'axios';
-import { ElMessage } from 'element-plus';
+import {ElNotification} from 'element-plus';
+import {useRouter} from "vue-router";
 
 export default {
-  data() {
-    return {
-      formData: {
-        username: '',
-        password: '',
-        selectedRoom: [], // 用于存储用户选择的楼栋、楼层、房间
-      },
-      rooms: [], // 存储从后端获取的楼栋、楼层、房间数据
+  setup() {
+    const router = useRouter(); // 在 setup 中使用 useRouter 获取 router 实例
+    const roomStore = useRoomStore();
+    const formData = ref({
+      username: '',
+      password: '',
+      selectedRoom: [] // 用于存储用户选择的楼栋、楼层、房间
+    });
+
+    /**
+     * 加载房间信息
+     *
+     * @author Wsssfun
+     */
+    const loadRooms = async () => {
+
+      // 从本地存储中加载房间信息
+      const storedRooms = localStorage.getItem('rooms');
+      if (storedRooms) {
+        // 从本地存储中加载房间信息
+        roomStore.rooms = JSON.parse(storedRooms);
+        // 设置房间信息加载完成标志
+        roomStore.isLoaded = true;
+      } else {
+        // 从服务端加载房间信息
+        await roomStore.fetchRooms();
+        // 加载成功后将房间信息存储到本地
+        localStorage.setItem('rooms', JSON.stringify(roomStore.rooms));
+      }
     };
-  },
-  mounted() {
-    this.fetchRooms(); // 组件挂载时获取房间数据
-  },
-  methods: {
-    // 获取楼栋、楼层、房间数据
-    fetchRooms() {
-      axios.get('http://localhost:8080/api/rooms')
-          .then(response => {
-            this.rooms = response.data; // 处理后端返回的房间数据
-          })
-          .catch(error => {
-            ElMessage.error('获取房间信息失败！');
-            console.error(error);
-          });
-    },
-    // 提交表单数据
-    submitForm() {
-      if (!this.formData.username || !this.formData.password || this.formData.selectedRoom.length === 0) {
-        ElMessage.warning('请填写完整的注册信息！');
+
+    onMounted(loadRooms);
+
+    /**
+     * 注册逻辑
+     *
+     * @author Wsssfun
+     */
+    const submitForm = async () => {
+      if (!formData.value.username || !formData.value.password || formData.value.selectedRoom.length === 0) {
+        ElNotification({
+          title: '注册失败',
+          message: '请填写完整的注册信息！',
+          type: 'warning',
+          position: 'bottom-right',
+          showClose: false,
+          customClass: 'small-notification'
+        });
         return;
       }
 
-      // 向后端发送注册请求
-      axios.post('http://localhost:8080/api/users/register', this.formData)
-          .then(response => {
-            ElMessage.success('注册成功！');
-            console.log('注册成功：', response.data);
-          })
-          .catch(error => {
-            ElMessage.error('注册失败，请重试！');
-            console.error('注册失败：', error);
+      // 提交请求到服务端
+      try {
+        const response = await axios.post('http://localhost:8080/api/users/register', formData.value);
+        // 注册成功(服务端响应200)
+        if (response.status === 200) {
+          ElNotification({
+            title: '注册成功',
+            message: '即将为您登录',
+            type: 'success',
+            position: 'bottom-right',
+            showClose: false,
+            customClass: 'small-notification'
           });
-    }
+
+          // 注册成功后清空表单数据
+          formData.value.username = '';
+          formData.value.password = '';
+          formData.value.selectedRoom = [];
+
+          // 两秒后跳转到登录页面
+          setTimeout(() => {
+            router.push('/');
+          }, 2000);
+        }
+      } catch (error) {
+        ElNotification({
+          title: '注册失败',
+          message: error.response.data,
+          type: 'error',
+          position: 'bottom-right',
+          showClose: false,
+          customClass: 'small-notification'
+        });
+      }
+    };
+
+    return {roomStore, formData, submitForm};
   }
 };
 </script>
@@ -78,5 +129,10 @@ export default {
 .registration-form {
   width: 400px;
   margin: 50px auto;
+}
+
+.login-text {
+  text-align: right;
+  margin-left: 20px;
 }
 </style>

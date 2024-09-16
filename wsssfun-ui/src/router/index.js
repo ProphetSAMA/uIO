@@ -29,7 +29,7 @@ const router = createRouter({
 
 // 路由守卫，检查用户是否有 JWT 令牌
 router.beforeEach((to, from, next) => {
-    const token = localStorage.getItem('token');
+    const token = sessionStorage.getItem('token');
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!token) {
             next('/login'); // 如果没有令牌，跳转到登录页面

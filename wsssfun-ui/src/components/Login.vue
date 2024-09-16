@@ -2,7 +2,7 @@
   <div class="login-bg">
     <div class="login-container">
 
-      <el-form :model="loginForm" status-icon :rules="rules" ref="loginForm" label-width="80px" class="demo-ruleForm">
+      <el-form ref="loginForm" :model="loginForm" :rules="rules" class="demo-ruleForm" label-width="80px" status-icon>
         <el-form-item label="用户名" prop="username">
           <el-input v-model="loginForm.username" placeholder="请输入用户名">
             <template #prepend>
@@ -46,8 +46,9 @@ import {Lock, User} from "@element-plus/icons-vue";
 export default {
   components: {Lock, User},
   setup() {
+    const router = useRouter(); // 在 setup 中使用 useRouter 获取 router 实例
     const userStore = useUserStore();
-    return {userStore};
+    return {userStore, router};
   },
   data() {
     return {
@@ -71,13 +72,20 @@ export default {
         const valid = await this.$refs.loginForm.validate();
         if (valid) {
           const response = await axios.post('/users/login', this.loginForm);
-          const token = response.data;
-          // 将 token 存储到 localStorage 中
-          localStorage.setItem('token', token);
-          // 更新全局状态，表示已登录
-          this.userStore.login(this.loginForm.username);
-          // 跳转到首页
-          this.$router.push('/');
+          if (response.status === 200) {
+            const token = response.data;
+
+            // 将 Token 存储在 sessionStorage 中
+            sessionStorage.setItem('token', token);
+
+            // 更新全局状态，表示已登录
+            this.userStore.login(this.loginForm.username);
+
+            ElMessage.success('登录成功！');
+
+            // 跳转到首页
+            this.$router.push('/');
+          }
         }
       } catch (error) {
         // 如果没有输入账号或密码，提示用户输入
