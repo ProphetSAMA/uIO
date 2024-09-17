@@ -29,7 +29,9 @@ const router = createRouter({
 
 // 路由守卫，检查用户是否有 JWT 令牌
 router.beforeEach((to, from, next) => {
+    // 从 sessionStorage 中获取令牌
     const token = sessionStorage.getItem('token');
+    // 如果目标页面需要身份验证，但没有令牌，跳转到登录页面
     if (to.matched.some(record => record.meta.requiresAuth)) {
         if (!token) {
             next('/login'); // 如果没有令牌，跳转到登录页面

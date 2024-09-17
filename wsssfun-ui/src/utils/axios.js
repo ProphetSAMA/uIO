@@ -1,4 +1,3 @@
-// src/utils/axios.js
 import axios from 'axios';
 
 const instance = axios.create({
@@ -10,7 +9,8 @@ const instance = axios.create({
 
 // 请求拦截器，添加 JWT 令牌
 instance.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
+    // 从 sessionStorage 中获取令牌
+    const token = sessionStorage.getItem('token');
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
