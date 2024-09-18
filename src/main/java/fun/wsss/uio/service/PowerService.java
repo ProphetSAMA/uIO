@@ -5,6 +5,7 @@ import fun.wsss.uio.model.Power;
 import fun.wsss.uio.utils.Http;
 import fun.wsss.uio.utils.Json;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -20,8 +21,8 @@ import java.util.logging.Logger;
  */
 @Service
 public class PowerService {
-    Logger logger = Logger.getLogger(PowerService.class.getName());
     private final PowerMapper powerMapper;
+    Logger logger = Logger.getLogger(PowerService.class.getName());
 
     @Autowired
     public PowerService(PowerMapper powerMapper) {
@@ -33,11 +34,12 @@ public class PowerService {
      *
      * @return 所有数据
      */
-    public ResponseEntity<List<Power>> selectAllPowerValue() {
+    @Cacheable(value = "allPowerValue")
+    public List<Power> selectAllPowerValue() {
         logger.info("getPowerValue方法开始执行");
         List<Power> powerList = powerMapper.selectList(null);
         logger.info("getPowerValue方法执行结束");
-        return ResponseEntity.ok(powerList);
+        return powerList;
     }
 
     /**

@@ -1,10 +1,5 @@
-<template xmlns="">
-  <div id="app">
-<!--    <AppHeader :is-logged-in="isLoggedIn"/>-->
-    <el-main>
-      <router-view></router-view>
-    </el-main>
-  </div>
+<template xmlns=''>
+      <router-view />
 </template>
 
 <script>

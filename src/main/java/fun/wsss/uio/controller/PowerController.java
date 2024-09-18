@@ -35,7 +35,8 @@ public class PowerController {
      */
     @GetMapping("/all-power")
     public ResponseEntity<List<Power>> selectAllPowerValues() {
-        return powerService.selectAllPowerValue();
+        List<Power> powerList = powerService.selectAllPowerValue();
+        return ResponseEntity.ok(powerList);
     }
 
     /**

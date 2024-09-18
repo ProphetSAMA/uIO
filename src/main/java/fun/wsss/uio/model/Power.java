@@ -15,6 +15,8 @@ public class Power {
     private String value;
     private String querytime;
 
+    public Power() {
+    }
 
     public Power(Double powerValue, String queryTime) {
         this.value = String.valueOf(powerValue);

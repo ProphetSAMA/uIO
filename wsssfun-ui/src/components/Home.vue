@@ -1,13 +1,20 @@
 <template>
-  <el-container class="home-container">
-    <el-header>
-      <h1>首页</h1>
-    </el-header>
-    <el-main>
-      <p>成功登录</p>
-      <el-button type="danger" @click="logout">退出登录</el-button>
-    </el-main>
-  </el-container>
+  <div class="common-layout">
+    <el-container>
+      <el-header class="el-header">
+        <h1 class="h1">首页</h1>
+      </el-header>
+      <el-container>
+        <el-aside class="el-aside" width="200px">Aside</el-aside>
+        <el-main class="el-main">
+          <div class="logout">
+            <p>成功登录</p>
+            <el-button type="danger" @click="logout">退出登录</el-button>
+          </div>
+        </el-main>
+      </el-container>
+    </el-container>
+  </div>
 </template>
 
 <script>
@@ -39,24 +46,29 @@ export default {
 </script>
 
 <style scoped>
-.home-container {
-  max-width: 600px;
-  margin: 0 auto;
-  text-align: center;
-  padding: 50px 20px;
-}
-
 .el-header {
+  text-align: center;
   background-color: #4000FF;
   color: white;
-  padding: 20px 0;
+}
+.h1 {
+  text-align: left;
+  margin-top: 15px;
+  margin-left: 50px;
+}
+
+.el-aside {
+  background-color: #ECEEF1;
 }
 
 .el-main {
-  margin-top: 20px;
+  background-color: #000000;
+  margin: 0 auto;
 }
 
-.el-button {
-  margin-top: 20px;
+.logout {
+  text-align: center;
+  margin-top: 100px;
 }
+
 </style>
