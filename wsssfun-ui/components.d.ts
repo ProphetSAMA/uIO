@@ -20,6 +20,7 @@ declare module 'vue' {
     ElMain: typeof import('element-plus/es')['ElMain']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     Home: typeof import('./src/components/Home.vue')['default']
+    InfoPower: typeof import('./src/components/InfoPower.vue')['default']
     Login: typeof import('./src/components/Login.vue')['default']
     Register: typeof import('./src/components/Register.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

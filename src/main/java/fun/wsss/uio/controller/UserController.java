@@ -25,7 +25,6 @@ import java.util.Map;
 public class UserController {
     private static final Logger logger = LogManager.getLogger(UserController.class);
 
-
     @Autowired
     private UserService userService;
     @Autowired
@@ -94,6 +93,4 @@ public class UserController {
 
         return userDTO;
     }
-
-
 }

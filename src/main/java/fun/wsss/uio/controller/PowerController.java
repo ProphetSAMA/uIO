@@ -17,7 +17,7 @@ import java.util.List;
  * @author Wsssfun
  */
 @RestController
-@CrossOrigin(origins = "*")
+
 @RequestMapping("/api")
 public class PowerController {
 

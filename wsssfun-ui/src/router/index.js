@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../components/Home.vue';
 import Register from "../components/Register.vue";
 import Login from '../components/Login.vue';
+import InfoPower from '../components/InfoPower.vue';
 
 const routes = [
     {
@@ -20,10 +21,15 @@ const routes = [
         name: 'Register',
         component: Register,
     },
+    {
+        path: '/info-power',
+        name: 'InfoPower',
+        component: InfoPower
+    }
 ];
 
 const router = createRouter({
-    history: createWebHistory(import.meta.env.BASE_URL), // 使用 import.meta.env.BASE_URL
+    history: createWebHistory(import.meta.env.BASE_URL), // 使用 import.meta.env.BASE_URL 作为基础 URL
     routes,
 });
 
