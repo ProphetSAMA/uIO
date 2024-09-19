@@ -24,8 +24,8 @@
 
 ## 技术栈
 
-- **后端**: Spring Boot, MyBatis-Plus, MySQL, Redis
-- **前端**: Vue.js, Element-Plus,VChar,VTable , Axios, Vue Router
+- **后端**: SpringBoot, MySQL, MyBatis-Plus, Redis
+- **前端**: Vue.js, Pinia, Element-Plus, VChar, Axios, Vue Router
 - **构建工具**: Maven, Webpack
 - **其他**: Lombok, Log4j, Git
 
@@ -37,6 +37,7 @@
 - 安装 [Maven](https://maven.apache.org/install.html)
 - 安装 [Node.js](https://nodejs.org/en/download/)
 - 安装 [MySQL](https://dev.mysql.com/downloads/installer/)
+- 安装 [Redis](https://redis.io/)
 
 ### 后端启动
 
@@ -83,7 +84,7 @@
 
 - [Spring Boot 官方文档](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
 - [Vue.js 官方文档](https://vuejs.org/v2/guide/)
-- [Element UI 官方文档](https://element.eleme.io/#/en-US)
+- [Element-Plus 官方文档](https://element-plus.org/zh-CN/)
 
 ## 贡献
 
