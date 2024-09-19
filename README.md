@@ -9,23 +9,27 @@
 
 😎该项目旨在方便用户查询自己的电费信息，免去繁琐的操作
 
+## 在线展示
+🔗 [uIO](https://uio.ink)    
+    
+🔗 https://uio.ink
+
 ## 项目功能
 
-- 查询电费余额
-- 查询电费消耗情况
-- 修改密码
-- 退出登录
+- 展示剩余电量
+- 展示电量消耗明细情况
 - 用户注册
 - 用户登录
 - 忘记密码
 - 重置密码
-- 修改个人信息
-- 查询个人信息
+- 修改密码
+- 退出登录
+- 修改房间信息
 
 ## 技术栈
 
-- **后端**: Spring Boot, MyBatis-Plus, MySQL, Redis
-- **前端**: Vue.js, Element-Plus,VChar,VTable , Axios, Vue Router
+- **后端**: SpringBoot, MySQL, MyBatis-Plus, Redis
+- **前端**: Vue.js, Pinia, Element-Plus, VChar, Axios, Vue Router
 - **构建工具**: Maven, Webpack
 - **其他**: Lombok, Log4j, Git
 
@@ -37,6 +41,7 @@
 - 安装 [Maven](https://maven.apache.org/install.html)
 - 安装 [Node.js](https://nodejs.org/en/download/)
 - 安装 [MySQL](https://dev.mysql.com/downloads/installer/)
+- 安装 [Redis](https://redis.io/)
 
 ### 后端启动
 
@@ -83,7 +88,7 @@
 
 - [Spring Boot 官方文档](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/)
 - [Vue.js 官方文档](https://vuejs.org/v2/guide/)
-- [Element UI 官方文档](https://element.eleme.io/#/en-US)
+- [Element-Plus 官方文档](https://element-plus.org/zh-CN/)
 
 ## 贡献
 
