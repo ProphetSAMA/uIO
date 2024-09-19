@@ -1,39 +1,8 @@
-<template>
-  <div>
-    <!-- el-table 组件渲染表格数据 -->
-    <div v-if="paginatedData.length > 0" class="table">
-      <el-table :data="paginatedData" style="width: 100%">
-        <el-table-column label="查询时间" prop="querytime" width="240"/>
-        <el-table-column label="电量值" prop="value" width="240"/>
-        <el-table-column label="使用量" prop="usevaule" width="240"/>
-      </el-table>
-
-
-    <!-- 分页组件 -->
-    <el-pagination v-if="totalItems > 0"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="totalItems"
-        background
-        class="pagination"
-        layout="total, prev, pager, next, jumper"
-        @current-change="handlePageChange"
-    />
-    </div>
-
-    <!-- 加载和错误状态 -->
-    <div v-if="loading">加载中...</div>
-    <div v-if="errorMessages">{{ errorMessages }}</div>
-
-    <!-- 显示总使用量 -->
-    <div>总使用量: {{ Usage }}</div>
-  </div>
-</template>
-
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import { usePowerStore } from '../store/powerStore'; // 引入Pinia store
-import { ElTable, ElTableColumn, ElPagination } from 'element-plus'; // 引入Element Plus的分页组件
+import { usePowerStore } from '@/store/powerStore.js'; // 引入Pinia store
+import { ElTable, ElTableColumn } from 'element-plus'; // 引入Element Plus的分页组件
+import infoVChart from '@/components/menu/infoVChart.vue'
 
 // 使用Pinia的store
 const powerStore = usePowerStore();
@@ -82,27 +51,33 @@ const Usage = computed(() => {
   }, 0);
 });
 
-// 总数据条数
-const totalItems = computed(() => powerStore.tableData.length);
-
-// 处理分页的页面切换
-const handlePageChange = (page) => {
-  currentPage.value = page; // 更新当前页
-};
-
 // 处理加载和错误状态
 const loading = computed(() => powerStore.loading);
 const errorMessages = computed(() => powerStore.errorMessages);
 </script>
 
+<template>
+  <info-v-chart />
+  <div>
+    <!-- el-table 组件渲染表格数据 -->
+    <div v-if="paginatedData.length > 0" class="table">
+      <el-table :data="paginatedData" style="width: 100%">
+        <el-table-column label="查询时间" prop="querytime" width="240"/>
+        <el-table-column label="电量值" prop="value" width="240"/>
+        <el-table-column label="使用量" prop="usevaule" width="240"/>
+      </el-table>
+    </div>
+
+    <!-- 加载和错误状态 -->
+    <div v-if="loading">加载中...</div>
+    <div v-if="errorMessages">{{ errorMessages }}</div>
+  </div>
+</template>
+
 <style scoped>
 .table {
   margin-top: 20px;
-  margin-left: 50px;
+  margin-left: 480px;
   width: 720px;
-}
-.pagination {
-  margin-top: 20px;
-  margin-left: 50px;
 }
 </style>

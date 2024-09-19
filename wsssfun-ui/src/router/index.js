@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import Home from '../components/Home.vue';
 import Register from "../components/Register.vue";
-import Login from '../components/Login.vue';
-import InfoPower from '../components/InfoPower.vue';
+import Login from '../components/login/Login.vue';
+import InfoPower from '../components/menu/table/InfoPower.vue';
 
 const routes = [
     {
