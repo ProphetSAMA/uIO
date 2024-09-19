@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -58,17 +59,30 @@ public class UserController {
      * @return 登录结果
      */
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Map<String, String> requestBody) {
+    public ResponseEntity<Map<String, Object>> login(@RequestBody Map<String, String> requestBody) {
         String username = requestBody.get("username");
         String password = requestBody.get("password");
 
+        // 调用 userService.login 返回 token
         String token = userService.login(username, password);
+
+        // 调用 userService 通过用户名获取用户ID
+        Long userId = userService.getUserIdByUsername(username);
 
         if (token != null) {
             logger.info("用户 {} 登录成功", username);
-            return ResponseEntity.ok(token);
+
+            // 创建响应对象，包含 token, userId 和 username
+            Map<String, Object> response = new HashMap<>(3);
+            response.put("token", token);
+            response.put("userId", userId);
+            response.put("username", username);
+
+            // 返回响应
+            return ResponseEntity.ok(response);
         } else {
-            return ResponseEntity.status(401).body("用户名或密码错误");
+            // 返回 401 错误，用户名或密码错误
+            return ResponseEntity.status(401).body(null);
         }
     }
 

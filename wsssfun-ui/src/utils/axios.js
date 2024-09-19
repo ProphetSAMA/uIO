@@ -12,6 +12,7 @@ instance.interceptors.request.use((config) => {
     // 从 sessionStorage 中获取令牌
     const token = sessionStorage.getItem('token');
     if (token) {
+        // 添加 JWT 令牌到请求头 用于访问其他页面
         config.headers.Authorization = `Bearer ${token}`;
     }
     return config;

@@ -1,4 +1,5 @@
 <template xmlns=''>
+<!--  <AppHeader :is-logged-in="isLoggedIn"/>-->
       <router-view />
 </template>
 

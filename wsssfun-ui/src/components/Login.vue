@@ -72,28 +72,35 @@ export default {
         const valid = await this.$refs.loginForm.validate();
         if (valid) {
           const response = await axios.post('/users/login', this.loginForm);
+
+          // 如果响应状态码为 200，表示登录成功
           if (response.status === 200) {
-            const token = response.data;
+            // 从响应数据中解构出 token、userId、username
+            const token = response.data.token;
+            const userId = response.data.userId;
+            const username = response.data.username;
 
-            // 将 Token 存储在 sessionStorage 中
-            sessionStorage.setItem('token', token);
+            if (token && userId && username) {
+              // 存储 token 和 userId 到 sessionStorage
+              sessionStorage.setItem('token', token);
+              sessionStorage.setItem('userId', userId);
 
-            // 更新全局状态，表示已登录
-            this.userStore.login(this.loginForm.username);
+              // 更新 Pinia 状态
+              this.userStore.login(username, userId, token);
 
-            ElMessage.success('登录成功！');
+              ElMessage.success('登录成功！');
 
-            // 跳转到首页
-            this.$router.push('/');
+              // 跳转到首页
+              this.router.push('/');
+            }
           }
         }
       } catch (error) {
-        // 如果没有输入账号或密码，提示用户输入
         if (!this.loginForm.username || !this.loginForm.password) {
+          // 如果用户名或密码为空，提示用户输入
           ElMessage.error('请输入账号和密码');
-          // 如果用户名或密码错误，提示用户
         } else if (error.response && error.response.data) {
-          // 直接使用 error.response.data 作为错误信息
+          // 直接显示后端传回的错误信息
           ElMessage.error(error.response.data);
         }
       }

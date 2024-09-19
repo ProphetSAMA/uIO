@@ -85,4 +85,12 @@ public class UserServiceImpl implements UserService {
     public User getUserProfile(Long userId) {
         return userMapper.findByUserId(userId);
     }
+
+    @Override
+    public Long getUserIdByUsername(String username) {
+        // 查询数据库，返回 User 对象
+        User user = userMapper.findByUsername(username);
+        // 从 User 对象中获取 ID
+        return user != null ? user.getId() : null;
+    }
 }
