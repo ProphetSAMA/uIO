@@ -1,5 +1,7 @@
 package fun.wsss.uio.model;
 
+import com.baomidou.mybatisplus.annotation.TableField;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,14 +14,16 @@ import lombok.Setter;
 @Getter
 public class Power {
 
-    private String value;
+    private Double value;
     private String querytime;
+    @TableField("change_value")
+    private Double changeValue;
 
     public Power() {
     }
 
     public Power(Double powerValue, String queryTime) {
-        this.value = String.valueOf(powerValue);
+        this.value = powerValue;
         this.querytime = queryTime;
     }
 

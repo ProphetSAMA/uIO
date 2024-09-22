@@ -12,7 +12,7 @@ public class RoomFormatUtil {
      * 格式化楼层
      *
      * @param floorNumber 层号
-     *                    
+     *
      * @return 格式化后的楼层
      */
     public static String formatFloor(int floorNumber) {
