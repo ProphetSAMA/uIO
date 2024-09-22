@@ -10,6 +10,8 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -23,6 +25,7 @@ public class ScheduledTasks {
 
 
     private final PowerService powerService;
+    private final LocalDateTime startTime;
 
     @Autowired
     private PowerMapper powerMapper;
@@ -30,14 +33,14 @@ public class ScheduledTasks {
 
     public ScheduledTasks(PowerService powerService) {
         this.powerService = powerService;
+        this.startTime = LocalDateTime.now();
     }
 
     /**
      * 定时插入数据，每小时执行一次
      */
-    @Scheduled(fixedRate = 3600000) // 每小时执行一次，单位为毫秒
-    public void reportCurrentTime() {
-        // 这里放要定时执行的方法
+    @Scheduled(cron = "0 0 * * * ?") // 每小时执行一次
+    public void insertLastedPowerValue() {
         powerService.insertPowerValue();
         logger.info("定时任务执行了");
     }
@@ -48,11 +51,18 @@ public class ScheduledTasks {
      * @return 刷新的数据
      */
     @CachePut(value = "allPowerValue")
-    @Scheduled(fixedRate = 3600000) // 每小时执行一次，单位为毫秒
+    @Scheduled(cron = "0 0 * * * ?") // 每小时执行一次 延后3秒执行
     public List<Power> refreshAllPowerValue() {
-        logger.info("Scheduled Task: refreshAllPowerValue 开始执行，刷新Redis缓存");
+        // 检查是否已经过了初始延迟时间
+        int start = 3;
+        if (Duration.between(startTime, LocalDateTime.now()).getSeconds() < start) {
+            logger.info("初始延迟时间未到，跳过执行");
+            return null;
+        }
+
+        logger.info("refreshAllPowerValue 开始执行，刷新Redis缓存");
         List<Power> powerList = powerMapper.selectList(null);
-        logger.info("Scheduled Task: refreshAllPowerValue 执行结束，缓存已更新");
+        logger.info("refreshAllPowerValue 执行结束，缓存已更新");
         return powerList;
     }
 }
