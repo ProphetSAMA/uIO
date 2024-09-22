@@ -29,7 +29,7 @@ public class RoomServiceImpl implements RoomService {
      * @param floorId 楼层ID
      * @return 房间列表
      */
-    @Cacheable(value = "roomCache", key = "#floorId")
+    @Cacheable(value = "roomList", key = "#floorId")
     @Override
     public List<Room> getRoomsByFloorId(int floorId) {
         QueryWrapper<Room> wrapper = new QueryWrapper<>();

@@ -2,7 +2,7 @@ package fun.wsss.uio.utils;
 
 import fun.wsss.uio.mapper.PowerMapper;
 import fun.wsss.uio.model.Power;
-import fun.wsss.uio.service.PowerService;
+import fun.wsss.uio.service.power.PowerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
