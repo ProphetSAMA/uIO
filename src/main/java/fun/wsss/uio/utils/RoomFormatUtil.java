@@ -11,7 +11,8 @@ public class RoomFormatUtil {
     /**
      * 格式化楼层
      *
-     * @param floorNumber 楼层号
+     * @param floorNumber 层号
+     *                    
      * @return 格式化后的楼层
      */
     public static String formatFloor(int floorNumber) {
@@ -23,7 +24,8 @@ public class RoomFormatUtil {
     /**
      * 格式化房间
      *
-     * @param roomNumber 房间号
+     * @param roomNumber 房号
+     *
      * @return 格式化后的房间
      */
     public static String formatRoom(int roomNumber) {
@@ -34,8 +36,9 @@ public class RoomFormatUtil {
     /**
      * 格式化房间显示
      *
-     * @param floorNumber 楼层号
-     * @param roomNumber  房间号
+     * @param floorNumber 层号
+     * @param roomNumber  房号
+     *
      * @return 格式化后的房间显示
      */
     public static String formatRoomDisplay(int floorNumber, int roomNumber) {
