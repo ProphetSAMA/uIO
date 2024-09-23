@@ -22,7 +22,7 @@ public class WebConfig implements WebMvcConfigurer {
         // 允许跨域请求的路径
         registry.addMapping("/**")
                 // 允许跨域请求的域名
-                .allowedOrigins("http://localhost:5176", "http://localhost:8848","http://localhost:8080")
+                .allowedOrigins("http://localhost:5173", "http://localhost:8848","http://localhost:8080")
                 // 允许所有请求方法
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 // 允许所有请求头

@@ -23,27 +23,10 @@
 
       <!-- 内容区 -->
       <el-main>
-
-        <!-- 卡片区域 -->
-        <el-row :gutter="20">
-          <el-col :span="12">
-            <el-card>
-              <h3>卡片 1</h3>
-              <p>内容描述</p>
-            </el-card>
-          </el-col>
-          <el-col :span="12">
-            <el-card>
-              <h3>卡片 2</h3>
-              <p>内容描述</p>
-            </el-card>
-          </el-col>
-        </el-row>
-
-        <!-- 图表 -->
+        <!-- 图表区域 -->
         <el-row :gutter="20">
           <el-col :span="24">
-            <v-chart :option="chartOptions" style="height: 400px;"></v-chart>
+            <div ref="chartContainer" style="height: 400px;"></div>
           </el-col>
         </el-row>
 
@@ -51,67 +34,102 @@
         <el-row :gutter="20" style="margin-top: 20px;">
           <el-col :span="24">
             <el-table :data="tableData" style="width: 100%">
-              <el-table-column label="日期" prop="date" width="180"/>
-              <el-table-column label="名称" prop="name" width="180"/>
-              <el-table-column label="数据值" prop="value"/>
+              <el-table-column label="时间" prop="querytime" width="180"/>
+              <el-table-column label="电量" prop="value"/>
+              <el-table-column label="电量变化" prop="changeValue"/>
             </el-table>
           </el-col>
         </el-row>
-
-        <!-- 时间轴 -->
-        <el-row :gutter="20" style="margin-top: 20px;">
-          <el-col :span="24">
-            <el-timeline>
-              <el-timeline-item v-for="item in timelineData" :key="item.date" :timestamp="item.date">
-                {{ item.content }}
-              </el-timeline-item>
-            </el-timeline>
-          </el-col>
-        </el-row>
-
       </el-main>
     </el-container>
   </el-container>
 </template>
 
 <script setup>
-import {ref} from 'vue';
-import * as echarts from 'echarts/core'; // 引入核心模块
-import {BarChart} from 'echarts/charts'; // 引入柱状图
-import {GridComponent, TitleComponent, TooltipComponent} from 'echarts/components'; // 引入图表组件
-import {CanvasRenderer} from 'echarts/renderers'; // 引入 Canvas 渲染器
-import VChart from 'vue-echarts'; // 引入 VChart
+import { ref, onMounted } from 'vue';
+import axios from 'axios'; // 引入 Axios 库
+import * as echarts from 'echarts'; // 引入 ECharts
 
-// 注册 ECharts 所需组件和渲染器
-echarts.use([TitleComponent, TooltipComponent, GridComponent, BarChart, CanvasRenderer]);
-// 表格数据
-const tableData = ref([
-  {date: '2024-09-18', name: '周一', value: 5},
-  {date: '2024-09-19', name: '周二', value: 20},
-  {date: '2024-09-20', name: '周三', value: 36},
-  {date: '2024-09-21', name: '周四', value: 10},
-  {date: '2024-09-22', name: '周五', value: 10},
-  {date: '2024-09-23', name: '周六', value: 20},
-  {date: '2024-09-24', name: '周日', value: 30},
-]);
+const tableData = ref([]);
+const chartContainer = ref(null);
 
-// 图表配置
-const chartOptions = ref({
-  title: {text: '每周消费统计'},
-  tooltip: {},
-  xAxis: {data: tableData.value.map(item => item.name)}, // 使用表格中的name字段作为x轴
-  yAxis: {},
-  series: [{type: 'bar', data: tableData.value.map(item => item.value)}], // 使用表格中的value字段作为数据
+// 处理后端数据，将同一天的数据合并
+const processChartData = (data) => {
+  const groupedData = {};
+
+  data.forEach(item => {
+    const day = item.querytime.split(' ')[0]; // 提取日期部分
+    if (!groupedData[day]) {
+      groupedData[day] = {
+        valueLast: parseFloat(item.value.toFixed(2)),   // 使用toFixed(2)确保精度并保留两位小数
+        rechargeSum: 0,          // 初始化该日期的充值（正数）累加值
+        consumptionSum: 0        // 初始化该日期的消耗（负数）累加值
+      };
+    }
+
+    groupedData[day].valueLast = parseFloat(item.value.toFixed(2)); // 每次更新当天最新的 value
+    if (item.changeValue > 0) {
+      groupedData[day].rechargeSum += parseFloat(item.changeValue.toFixed(2));  // 累加充值，并保留精度
+    } else {
+      groupedData[day].consumptionSum += parseFloat(Math.abs(item.changeValue).toFixed(2)); // 累加消耗的绝对值
+    }
+  });
+
+  return Object.keys(groupedData).map(day => ({
+    name: day,
+    valueLast: groupedData[day].valueLast,            // 当天的最新 value 值
+    rechargeSum: groupedData[day].rechargeSum,        // 当天的充值总和
+    consumptionSum: groupedData[day].consumptionSum   // 当天的消耗总和（正数显示）
+  }));
+};
+
+const fetchData = async () => {
+  try {
+    const response = await axios.get('http://localhost:8080/api/recent-week-power');
+    const weekPowerData = response.data;
+
+    tableData.value = weekPowerData;
+
+    const chartData = processChartData(weekPowerData);
+    const chartInstance = echarts.init(chartContainer.value);
+
+    const chartOptions = {
+      title: { text: '近一周电量变化统计' },
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }
+      },
+      legend: { data: ['总电量', '充值', '消耗'] },
+      xAxis: { type: 'category', data: chartData.map(item => item.name) },
+      yAxis: { type: 'value' },
+      series: [
+        {
+          name: '总电量',
+          type: 'bar',
+          data: chartData.map(item => item.valueLast), // 当天的最后一个 value
+        },
+        {
+          name: '充值',
+          type: 'bar',
+          data: chartData.map(item => item.rechargeSum), // 当天的充值总和
+        },
+        {
+          name: '消耗',
+          type: 'bar',
+          data: chartData.map(item => item.consumptionSum), // 当天的消耗总和（正数显示）
+        }
+      ]
+    };
+
+    chartInstance.setOption(chartOptions);
+  } catch (error) {
+    console.error('获取电量数据失败', error);
+  }
+};
+
+onMounted(() => {
+  fetchData();
 });
-
-
-
-// 时间轴数据
-const timelineData = ref([
-  { date: '2024-09-01', content: '事件1' },
-  { date: '2024-09-05', content: '事件2' },
-  { date: '2024-09-10', content: '事件3' },
-]);
 </script>
 
 <style scoped>
@@ -130,6 +148,11 @@ const timelineData = ref([
   height: 100%;
 }
 </style>
+
+
+
+
+
 
 
 <!--<template>-->
