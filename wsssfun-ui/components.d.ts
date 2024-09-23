@@ -8,10 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AppHead: typeof import('./src/components/AppHead.vue')['default']
-    Components: typeof import('./src/components/index.vue')['default']
     ElAside: typeof import('element-plus/es')['ElAside']
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElCard: typeof import('element-plus/es')['ElCard']
     ElCascader: typeof import('element-plus/es')['ElCascader']
     ElCol: typeof import('element-plus/es')['ElCol']
     ElContainer: typeof import('element-plus/es')['ElContainer']
@@ -24,7 +22,6 @@ declare module 'vue' {
     ElMain: typeof import('element-plus/es')['ElMain']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
-    ElPagination: typeof import('element-plus/es')['ElPagination']
     ElRow: typeof import('element-plus/es')['ElRow']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
@@ -36,10 +33,8 @@ declare module 'vue' {
     InfoVChart: typeof import('./src/components/menu/infoVChart.vue')['default']
     LatestTable: typeof import('./src/components/menu/table/latestTable.vue')['default']
     Login: typeof import('./src/components/login/Login.vue')['default']
-    LoginForm: typeof import('./src/components/login/LoginForm.vue')['default']
     Register: typeof import('./src/components/Register.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    VChart: typeof import('./src/components/menu/VChart.vue')['default']
   }
 }

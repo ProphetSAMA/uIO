@@ -32,7 +32,7 @@
 
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import { usePowerStore } from '../../../store/powerStore.js'; // 引入Pinia store
+import { usePowerStore } from '@/store/powerStore.js'; // 引入Pinia store
 import { ElTable, ElTableColumn, ElPagination } from 'element-plus'; // 引入Element Plus的分页组件
 
 // 使用Pinia的store
