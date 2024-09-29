@@ -1,5 +1,6 @@
 package fun.wsss.uio.service.user;
 
+import fun.wsss.uio.dto.user.UserDTO;
 import fun.wsss.uio.model.user.User;
 import org.springframework.stereotype.Service;
 
@@ -36,7 +37,7 @@ public interface UserService {
      * @param userId 用户ID
      * @return 用户
      */
-    User getUserProfile(Long userId);
+    UserDTO getUserProfile(Long userId);
 
     /**
      * 通过用户名查询用户ID
@@ -45,5 +46,12 @@ public interface UserService {
      * @return 用户ID
      */
     Long getUserIdByUsername(String username);
+
+    /**
+     * 获取所有用户
+     *
+     * @return 所有用户
+     */
+    List<UserDTO> getAllUser();
 }
 

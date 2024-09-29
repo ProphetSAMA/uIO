@@ -1,11 +1,8 @@
 package fun.wsss.uio.controller;
 
 import fun.wsss.uio.dto.user.UserDTO;
-
 import fun.wsss.uio.mapper.user.UserMapper;
-import fun.wsss.uio.model.user.User;
 import fun.wsss.uio.service.user.UserService;
-import fun.wsss.uio.utils.RoomFormatUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,8 +38,7 @@ public class UserController {
     public ResponseEntity<String> register(@RequestBody Map<String, Object> requestBody) {
         String username = (String) requestBody.get("username");
         String password = (String) requestBody.get("password");
-        @SuppressWarnings("unchecked")
-        List<Integer> selectedRoom = (List<Integer>) requestBody.get("selectedRoom");
+        @SuppressWarnings("unchecked") List<Integer> selectedRoom = (List<Integer>) requestBody.get("selectedRoom");
 
         if (userMapper.findByUsername(username) != null) {
             return ResponseEntity.status(400).body("用户名已存在");
@@ -94,17 +90,19 @@ public class UserController {
      */
     @GetMapping("/profile")
     public UserDTO getUserProfile(@RequestParam("userId") Long userId) {
-        User user = userService.getUserProfile(userId);
+        UserDTO userDTO = userService.getUserProfile(userId);
+        // 如果用户不存在，抛出异常
+        if (userDTO == null) {
+            throw new RuntimeException("用户不存在");
+        }
+        return userService.getUserProfile(userId);
+    }
 
-        // 使用自定义进制格式化楼层和房间信息
-        String formattedRoomDisplay = RoomFormatUtil.formatRoomDisplay(user.getFloorId(), user.getRoomId());
-
-        // 返回 DTO
-        UserDTO userDTO = new UserDTO();
-        userDTO.setId(user.getId());
-        userDTO.setUsername(user.getUsername());
-        userDTO.setRoomDisplay(formattedRoomDisplay);
-
-        return userDTO;
+    @GetMapping("/all")
+    public List<UserDTO> getAllUser() {
+        return userService.getAllUser();
     }
 }
+
+
+

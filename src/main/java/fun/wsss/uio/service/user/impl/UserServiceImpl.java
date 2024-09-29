@@ -1,8 +1,10 @@
 package fun.wsss.uio.service.user.impl;
 
+import fun.wsss.uio.dto.user.UserDTO;
 import fun.wsss.uio.mapper.user.UserMapper;
 import fun.wsss.uio.model.user.User;
 import fun.wsss.uio.service.user.UserService;
+import fun.wsss.uio.utils.RoomFormatUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户Service实现类
@@ -81,16 +84,75 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    @Override
-    public User getUserProfile(Long userId) {
-        return userMapper.findByUserId(userId);
+    /**
+     * 将 User 对象转换为 UserDTO 对象
+     *
+     * @param user 用户
+     * @return UserDTO
+     */
+    private UserDTO convertToUserDTO(User user) {
+        if (user == null) {
+            return null;
+        }
+        // 格式化房间信息
+        String formattedRoomDisplay = RoomFormatUtil.formatRoomDisplay(user.getFloorId(), user.getRoomId());
+        // 创建 UserDTO 对象
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setRoomDisplay(formattedRoomDisplay);
+        // 返回 UserDTO 对象
+        return userDTO;
     }
 
+    /**
+     * 获取用户信息
+     *
+     * @param userId 用户ID
+     * @return 用户
+     */
+    @Override
+    public UserDTO getUserProfile(Long userId) {
+        // 通过用户ID查询用户
+        User user = userMapper.findByUserId(userId);
+        // 转换为 UserDTO 对象
+        return convertToUserDTO(user);
+    }
+
+    /**
+     * 通过用户名查询用户ID
+     *
+     * @param username 用户名
+     * @return 用户ID
+     */
     @Override
     public Long getUserIdByUsername(String username) {
         // 查询数据库，返回 User 对象
         User user = userMapper.findByUsername(username);
         // 从 User 对象中获取 ID
         return user != null ? user.getId() : null;
+    }
+
+    /**
+     * 获取所有用户
+     *
+     * @return 所有用户
+     */
+    @Override
+    public List<UserDTO> getAllUser() {
+        List<User> users = userMapper.getAllUser();
+
+        // 转换为 UserDTO 列表
+        return users.stream().map(user -> {
+            // 创建 UserDTO 对象
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setUsername(user.getUsername());
+            // 格式化房间信息
+            userDTO.setRoomDisplay(RoomFormatUtil.formatRoomDisplay(user.getFloorId(), user.getRoomId()));
+            // 返回 UserDTO 对象
+            return userDTO;
+            // 转换为 List
+        }).collect(Collectors.toList());
     }
 }
