@@ -1,6 +1,6 @@
 # 校园电费查询平台
 
-## 项目简介
+## 💦项目简介
 
 😘这是一个⚡宿舍电费查询⚡项目，主要功能是查询宿舍电费  
 😁可在注册时使用级联选择器选择具体的宿舍，也可以在个人信息中修改  
@@ -9,35 +9,45 @@
 
 😎该项目旨在方便用户查询自己的电费信息，免去繁琐的操作
 
-## 在线展示
-🔗 [uIO](https://uio.ink)    
+## 🔗在线展示
+ 👉 [uIO](https://uio.ink)
     
-🔗 https://uio.ink
+ 👉 **https://uio.ink**
 
-## 项目功能
+## 🕹️项目功能
 
-- 展示剩余电量
-- 展示电量消耗明细情况
-- 用户注册
-- 用户登录
-- 忘记密码
-- 重置密码
-- 修改密码
-- 退出登录
-- 修改房间信息
+- 数据可视化
+  - 展示电费余额
+  - 展示饼图、柱状图、事件     
+  
+  
+- 电费查询
+  - 查询电费余额
+  - 查询电费消耗情况     
+  
+  
+- 用户管理
+  - 用户注册
+  - 用户登录
+  - 忘记密码
+  - 重置密码
+  - 修改密码
+  - 退出登录
+  - 修改房间信息
+  - 修改个人信息
 
-## 技术栈
+## 🛫技术栈
 
 - **后端**: SpringBoot, MySQL, MyBatis-Plus, Redis
-- **前端**: Vue.js, Pinia, Element-Plus, VChar, Axios, Vue Router
-- **构建工具**: Maven, Webpack
+- **前端**: Vue.js, Pinia, Element-Plus, Axios
+- **构建工具**: Maven
 - **其他**: Lombok, Log4j, Git
 
-## 快速开始
+## 🏇快速开始
 
 ### 前提条件
 
-- 安装 [JDK 11](https://www.oracle.com/java/technologies/javase-jdk11-downloads.html)
+- 安装 [JDK 17](https://www.oracle.com/java/technologies/javase-jdk17-downloads.html)
 - 安装 [Maven](https://maven.apache.org/install.html)
 - 安装 [Node.js](https://nodejs.org/en/download/)
 - 安装 [MySQL](https://dev.mysql.com/downloads/installer/)
