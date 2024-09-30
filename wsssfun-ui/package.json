@@ -18,6 +18,7 @@
     "echarts": "^5.5.1",
     "element-plus": "^2.8.2",
     "jwt-decode": "^4.0.0",
+    "minimist": "^1.2.8",
     "pinia": "^2.2.2",
     "vue": "^3.4.37",
     "vue-echarts": "^7.0.3",
