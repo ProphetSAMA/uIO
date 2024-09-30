@@ -9,6 +9,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -31,6 +32,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     /**
      * 用户注册
@@ -51,7 +54,7 @@ public class UserServiceImpl implements UserService {
         // 创建 User 对象并设置属性
         User user = new User();
         user.setUsername(username);
-        user.setPassword(password);
+        user.setPassword(bCryptPasswordEncoder.encode(password));
         user.setBuildingId(selectedRoom.get(0));
         user.setFloorId(selectedRoom.get(1));
         user.setRoomId(selectedRoom.get(2));
@@ -71,7 +74,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public String login(String username, String password) {
         User user = userMapper.findByUsername(username);
-        if (user != null && user.getPassword().equals(password)) {
+        if (user != null && bCryptPasswordEncoder.matches(password, user.getPassword())) {
             // 登录成功，生成 JWT 令牌
             return Jwts.builder()
                     .setSubject(username)
