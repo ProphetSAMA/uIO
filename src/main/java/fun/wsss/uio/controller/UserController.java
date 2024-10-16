@@ -18,7 +18,6 @@ import java.util.Map;
  *
  * @author Wsssfun
  */
-@CrossOrigin("*")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {

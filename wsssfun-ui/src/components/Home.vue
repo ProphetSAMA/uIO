@@ -98,7 +98,7 @@ const userInfo = ref({
 // 获取用户名和房间信息
 const fetchRoomInfo = async (userId) => {
   try {
-    const response = await axios.get(`https://117.72.10.41:8080/api/users/profile?userId=${userId}`);
+    const response = await axios.get(`https://api.uio.ink/api/users/profile?userId=${userId}`);
     userInfo.value.roomDisplay = response.data.roomDisplay;
   } catch (error) {
     console.error('获取房间信息失败:', error);
@@ -196,7 +196,7 @@ const processTimelineData = (data) => {
 // 获取并处理充值时间轴的数据
 const fetchRechargeData = async () => {
   try {
-    const response = await axios.get('https://117.72.10.41:8080/api/all-power');
+    const response = await axios.get('https://api.uio.ink/api/all-power');
     const allPowerData = response.data;
 
     // 筛选出近一个月的充值数据
@@ -212,7 +212,7 @@ const fetchRechargeData = async () => {
 
 const fetchData = async () => {
   try {
-    const response = await axios.get('https://117.72.10.41:8080/api/recent-week-power');
+    const response = await axios.get('https://api.uio.ink/api/recent-week-power');
     const weekPowerData = response.data;
 
     tableData.value = weekPowerData;

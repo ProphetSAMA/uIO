@@ -22,7 +22,16 @@ public class WebConfig implements WebMvcConfigurer {
         // 允许跨域请求的路径
         registry.addMapping("/**")
                 // 允许跨域请求的域名
-                .allowedOrigins("*")
+                .allowedOrigins(
+                        "https://uio.ink",
+                        "https://api.uio.ink",
+                        "https://117.72.10.41",
+                        "http://127.0.0.1",
+                        "http://localhost",
+                        "http://localhost:8080",
+                        "https:127.0.0.1",
+                        "https://localhost",
+                        "https://localhost:8080")
                 // 允许所有请求方法
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 // 允许所有请求头

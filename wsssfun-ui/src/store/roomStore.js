@@ -27,7 +27,7 @@ export const useRoomStore = defineStore('roomStore', {
                 }
 
                 // 若本地没有缓存 则请求后端数据
-                const response = await axios.get('https://117.72.10.41:8080/api/rooms');
+                const response = await axios.get('https://api.uio.ink/api/rooms');
                 this.rooms = response.data;
                 this.isLoaded = true;
 

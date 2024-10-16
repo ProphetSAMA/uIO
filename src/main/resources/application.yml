@@ -10,9 +10,9 @@ spring:
     location: banner.txt
   #数据库配置
   datasource:
-    url: jdbc:mysql://127.0.0.1:3306/springboot?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-    username: springboot
-    password: springboot
+    url: jdbc:mysql://127.0.0.1:3306/uio?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
+    username: uio
+    password: Qwe!230528
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -22,7 +22,7 @@ spring:
     redis:
       host: 127.0.0.1
       port: 6379
-      password: "Qwe!230528"
+      password: "qwe123.0+-"
       timeout: 6000
 mybatis-plus:
   global-config:
