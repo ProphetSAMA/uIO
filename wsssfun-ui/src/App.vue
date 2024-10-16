@@ -1,7 +1,9 @@
 <template xmlns=''>
 <!--  <AppHeader :is-logged-in="isLoggedIn"/>-->
       <router-view />
-    <p>豫ICP备2024093362号-1</p>
+    <p class="website">
+      <a href="https://beian.miit.gov.cn/#/Integrated/index">豫ICP备2024093362号-1</a>
+    </p>
 </template>
 
 <script>
@@ -28,5 +30,8 @@ export default defineComponent({
 </script>
 
 <style>
-
+.website {
+  text-align: center;
+  margin-top: -20px;
+}
 </style>
