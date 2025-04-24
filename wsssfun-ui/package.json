@@ -12,7 +12,7 @@
     "@element-plus/icons-vue": "^2.3.1",
     "@visactor/vchart": "^1.12.5",
     "@visactor/vtable": "^1.7.7",
-    "axios": "^1.7.7",
+    "axios": "^1.8.2",
     "canvas": "^2.11.2",
     "dayjs": "^1.11.13",
     "echarts": "^5.5.1",
