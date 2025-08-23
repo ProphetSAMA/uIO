@@ -23,10 +23,6 @@ pipeline {
                     branches: [[name: '*/master']],
                     extensions: [
                         [$class: 'CloneOption', depth: 1, shallow: true],
-                        [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-                            [path: 'uio/src/'],
-                            [path: 'uio/wsssfun-ui/']
-                        ]],
                         [$class: 'CleanBeforeCheckout']
                     ],
                     userRemoteConfigs: [[
@@ -80,16 +76,7 @@ pipeline {
 
     post {
         always {
-            cleanWs(
-                cleanWhenAborted: true,
-                cleanWhenFailure: true,
-                cleanWhenSuccess: true,
-                deleteDirs: true,
-                patterns: [
-                    [pattern: '**/.git/**', type: 'INCLUDE'],
-                    [pattern: '**/node_modules/**', type: 'EXCLUDE']
-                ]
-            )
+            cleanWs()
             echo '构建失败！详情查看: https://jenkins.wsss.fun/job/uIO/'
         }
     }
