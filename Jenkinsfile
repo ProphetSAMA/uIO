@@ -50,9 +50,9 @@ pipeline {
                         mvn clean package \
                         -DskipTests \
                         -Dmaven.test.skip=true \
-                        -Dmaven.compile.fork=false \  # 禁用fork编译
-                        -T 1 \  # 单线程构建
-                        -o \    # 离线模式，优先使用本地缓存
+                        -Dmaven.compile.fork=false \
+                        -T 1 \
+                        -o \
                         -s ${env.JENKINS_HOME}/settings.xml
                     """
                 }
