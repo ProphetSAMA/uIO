@@ -1,20 +1,20 @@
 pipeline {
     agent any
 
-    options {
-        timeout(time: 60, unit: 'MINUTES')
-        disableConcurrentBuilds() // 禁止并行构建，减少内存压力
-    }
-
     environment {
         BACKEND_DIR = "uio/src"
         FRONTEND_DIR = "uio/wsssfun-ui"
         NPM_REGISTRY = "https://registry.npmmirror.com"
         
         // 内存限制（关键优化）
-        MAVEN_OPTS = "-Xmx512m -XX:MaxPermSize=256m"  // 大幅减少Maven内存
-        NODE_OPTIONS = "--max-old-space-size=1024"    // Node.js限制1GB
-        JAVA_OPTS = "-Xmx256m"                        // Jenkins构建器内存限制
+        MAVEN_OPTS = "-Xmx512m -XX:MaxPermSize=256m"
+        NODE_OPTIONS = "--max-old-space-size=1024"
+        JAVA_OPTS = "-Xmx256m"
+    }
+
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 60, unit: 'MINUTES')
     }
 
     stages {
@@ -22,18 +22,17 @@ pipeline {
             steps {
                 checkout([
                     $class: 'GitSCM',
-                    branches: [[name: '*/main']],
+                    branches: [[name: '*/master']],
                     extensions: [
-                        [$class: 'CloneOption', depth: 1, shallow: true], // 浅克隆
+                        [$class: 'CloneOption', depth: 1, shallow: true],
                         [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
-                            [$path: 'uio/src/'],
-                            [$path: 'uio/wsssfun-ui/']
-                        ]], // 只拉取需要的目录
+                            [path: 'uio/src/'],
+                            [path: 'uio/wsssfun-ui/']
+                        ]],
                         [$class: 'CleanBeforeCheckout']
                     ],
                     userRemoteConfigs: [[
                         url: 'https://github.com/ProphetSAMA/uIO.git'
-                        // 如果仓库公开，可以不用凭据
                     ]]
                 ])
             }
@@ -45,16 +44,15 @@ pipeline {
             }
             steps {
                 dir(env.BACKEND_DIR) {
-                    sh """
-                        # 使用系统Maven，避免工具安装开销
+                    sh '''
                         mvn clean package \
-                        -DskipTests \
-                        -Dmaven.test.skip=true \
-                        -Dmaven.compile.fork=false \
-                        -T 1 \
-                        -o \
-                        -s ${env.JENKINS_HOME}/settings.xml
-                    """
+                          -DskipTests \
+                          -Dmaven.test.skip=true \
+                          -Dmaven.compile.fork=false \
+                          -T 1 \
+                          -o \
+                          -s ${JENKINS_HOME}/settings.xml
+                    '''
                 }
             }
         }
@@ -65,12 +63,11 @@ pipeline {
             }
             steps {
                 dir(env.FRONTEND_DIR) {
-                    sh """
-                        # 使用系统Node.js，避免工具安装开销
-                        npm config set registry ${env.NPM_REGISTRY}
+                    sh '''
+                        npm config set registry ${NPM_REGISTRY}
                         npm install --no-optional --no-audit --no-fund --prefer-offline
                         npm run build --if-present
-                    """
+                    '''
                 }
             }
         }
@@ -78,7 +75,6 @@ pipeline {
         stage('Archive') {
             steps {
                 script {
-                    // 只归档必要文件
                     def jarFiles = findFiles(glob: "${env.BACKEND_DIR}/target/*.jar")
                     def distFiles = findFiles(glob: "${env.FRONTEND_DIR}/dist/**")
                     
@@ -102,14 +98,10 @@ pipeline {
                 deleteDirs: true,
                 patterns: [
                     [pattern: '**/.git/**', type: 'INCLUDE'],
-                    [pattern: '**/node_modules/**', type: 'EXCLUDE'], // 保留node_modules
-                    [pattern: '**/target/**', type: 'EXCLUDE']        // 保留target
+                    [pattern: '**/node_modules/**', type: 'EXCLUDE']
                 ]
             )
-        }
-        failure {
-            // 轻量级通知，避免邮件服务消耗资源
-            echo "构建失败！详情查看: ${env.BUILD_URL}console"
+            echo '构建失败！详情查看: https://jenkins.wsss.fun/job/uIO/'
         }
     }
 }
