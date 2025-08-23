@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        BACKEND_DIR = "uio/src"
-        FRONTEND_DIR = "uio/wsssfun-ui"
+        BACKEND_DIR = "src"
+        FRONTEND_DIR = "wsssfun-ui"
         NPM_REGISTRY = "https://registry.npmmirror.com"
         MAVEN_OPTS = "-Xmx512m -XX:MaxPermSize=256m"
         NODE_OPTIONS = "--max-old-space-size=1024"
