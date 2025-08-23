@@ -1,20 +1,20 @@
 pipeline {
     agent any
 
-    tools {
-        nodejs 'NodeJS_club'  // 确保Jenkins中已配置此工具
-        maven 'Maven_club'    // 确保Jenkins中已配置此工具
+    options {
+        timeout(time: 60, unit: 'MINUTES')
+        disableConcurrentBuilds() // 禁止并行构建，减少内存压力
     }
 
     environment {
-        // 新项目路径配置
-        BACKEND_DIR = "uio/src"          // 后端代码目录
-        FRONTEND_DIR = "uio/wsssfun-ui"  // 前端代码目录
-        
-        // 构建优化配置
+        BACKEND_DIR = "uio/src"
+        FRONTEND_DIR = "uio/wsssfun-ui"
         NPM_REGISTRY = "https://registry.npmmirror.com"
-        MAVEN_OPTS = "-Xmx2048m -XX:MaxPermSize=512m"
-        NODE_OPTIONS = "--max-old-space-size=4096"
+        
+        // 内存限制（关键优化）
+        MAVEN_OPTS = "-Xmx512m -XX:MaxPermSize=256m"  // 大幅减少Maven内存
+        NODE_OPTIONS = "--max-old-space-size=1024"    // Node.js限制1GB
+        JAVA_OPTS = "-Xmx256m"                        // Jenkins构建器内存限制
     }
 
     stages {
@@ -22,14 +22,18 @@ pipeline {
             steps {
                 checkout([
                     $class: 'GitSCM',
-                    branches: [[name: '*/master']],  \
+                    branches: [[name: '*/main']],
                     extensions: [
-                        [$class: 'RelativeTargetDirectory', relativeTargetDir: 'uio'],
+                        [$class: 'CloneOption', depth: 1, shallow: true], // 浅克隆
+                        [$class: 'SparseCheckoutPaths', sparseCheckoutPaths: [
+                            [$path: 'uio/src/'],
+                            [$path: 'uio/wsssfun-ui/']
+                        ]], // 只拉取需要的目录
                         [$class: 'CleanBeforeCheckout']
                     ],
                     userRemoteConfigs: [[
-                        url: 'https://github.com/ProphetSAMA/uIO.git',
-                        credentialsId: 'github-credential'
+                        url: 'https://github.com/ProphetSAMA/uIO.git'
+                        // 如果仓库公开，可以不用凭据
                     ]]
                 ])
             }
@@ -42,15 +46,15 @@ pipeline {
             steps {
                 dir(env.BACKEND_DIR) {
                     sh """
-                        ${tool 'Maven_club'}/bin/mvn clean package \
+                        # 使用系统Maven，避免工具安装开销
+                        mvn clean package \
                         -DskipTests \
+                        -Dmaven.test.skip=true \
+                        -Dmaven.compile.fork=false \  # 禁用fork编译
+                        -T 1 \  # 单线程构建
+                        -o \    # 离线模式，优先使用本地缓存
                         -s ${env.JENKINS_HOME}/settings.xml
                     """
-                }
-            }
-            post {
-                success {
-                    stash name: 'backend-artifact', includes: "target/*.jar"
                 }
             }
         }
@@ -62,15 +66,11 @@ pipeline {
             steps {
                 dir(env.FRONTEND_DIR) {
                     sh """
+                        # 使用系统Node.js，避免工具安装开销
                         npm config set registry ${env.NPM_REGISTRY}
-                        npm ci --prefer-offline --no-audit
-                        npm run build
+                        npm install --no-optional --no-audit --no-fund --prefer-offline
+                        npm run build --if-present
                     """
-                }
-            }
-            post {
-                success {
-                    stash name: 'frontend-artifact', includes: "dist/**"
                 }
             }
         }
@@ -78,9 +78,16 @@ pipeline {
         stage('Archive') {
             steps {
                 script {
-                    unstash 'backend-artifact'
-                    unstash 'frontend-artifact'
-                    archiveArtifacts artifacts: "**/target/*.jar, **/dist/**", fingerprint: true
+                    // 只归档必要文件
+                    def jarFiles = findFiles(glob: "${env.BACKEND_DIR}/target/*.jar")
+                    def distFiles = findFiles(glob: "${env.FRONTEND_DIR}/dist/**")
+                    
+                    if (jarFiles) {
+                        archiveArtifacts artifacts: "${env.BACKEND_DIR}/target/*.jar", fingerprint: true
+                    }
+                    if (distFiles) {
+                        archiveArtifacts artifacts: "${env.FRONTEND_DIR}/dist/**", fingerprint: true
+                    }
                 }
             }
         }
@@ -92,22 +99,17 @@ pipeline {
                 cleanWhenAborted: true,
                 cleanWhenFailure: true,
                 cleanWhenSuccess: true,
+                deleteDirs: true,
                 patterns: [
                     [pattern: '**/.git/**', type: 'INCLUDE'],
-                    [pattern: '**/node_modules/**', type: 'EXCLUDE']
+                    [pattern: '**/node_modules/**', type: 'EXCLUDE'], // 保留node_modules
+                    [pattern: '**/target/**', type: 'EXCLUDE']        // 保留target
                 ]
             )
         }
         failure {
-            mail(
-                to: 'wsssfun@icloud.com',
-                subject: "构建失败: ${env.JOB_NAME}",
-                body: """
-                项目: ${env.JOB_NAME}
-                失败阶段: ${env.STAGE_NAME}
-                日志: ${env.BUILD_URL}console
-                """
-            )
+            // 轻量级通知，避免邮件服务消耗资源
+            echo "构建失败！详情查看: ${env.BUILD_URL}console"
         }
     }
 }
