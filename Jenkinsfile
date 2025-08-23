@@ -5,8 +5,6 @@ pipeline {
         BACKEND_DIR = "uio/src"
         FRONTEND_DIR = "uio/wsssfun-ui"
         NPM_REGISTRY = "https://registry.npmmirror.com"
-        
-        // 内存限制（关键优化）
         MAVEN_OPTS = "-Xmx512m -XX:MaxPermSize=256m"
         NODE_OPTIONS = "--max-old-space-size=1024"
         JAVA_OPTS = "-Xmx256m"
@@ -74,17 +72,8 @@ pipeline {
 
         stage('Archive') {
             steps {
-                script {
-                    def jarFiles = findFiles(glob: "${env.BACKEND_DIR}/target/*.jar")
-                    def distFiles = findFiles(glob: "${env.FRONTEND_DIR}/dist/**")
-                    
-                    if (jarFiles) {
-                        archiveArtifacts artifacts: "${env.BACKEND_DIR}/target/*.jar", fingerprint: true
-                    }
-                    if (distFiles) {
-                        archiveArtifacts artifacts: "${env.FRONTEND_DIR}/dist/**", fingerprint: true
-                    }
-                }
+                archiveArtifacts artifacts: "${env.BACKEND_DIR}/target/*.jar", fingerprint: true
+                archiveArtifacts artifacts: "${env.FRONTEND_DIR}/dist/**", fingerprint: true
             }
         }
     }
