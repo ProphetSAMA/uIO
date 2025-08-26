@@ -1,59 +1,55 @@
 package fun.wsss.uio.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-import java.io.IOException;
+import com.alibaba.fastjson.JSONObject;
+import org.springframework.stereotype.Component;
 
 /**
  * JSON工具类
  *
  * @author Wsssfun
  */
+@Component
 public class Json {
     public Double quantity;
-
-    final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * 处理HTTP响应并提取电量值
      *
-     * @param http HTTP响应对象
+     * @param response HTTP响应字符串
      */
-    public void processResponse(Http http) {
-        // 检查HTTP响应是否为空
-        if (http == null || http.response == null) {
+    public void processResponse(String response) {
+        // 检查响应是否为空
+        if (response == null) {
             throw new IllegalArgumentException("HTTP响应为空");
         }
 
-        JsonNode jsonNode;
-        try {
-            // 读取并解析HTTP响应体为JsonNode对象
-            jsonNode = objectMapper.readTree(http.response);
-        } catch (IOException e) {
-            throw new RuntimeException("解析JSON失败", e);
-        }
-
+        JSONObject jsonObject = JSONObject.parseObject(response);
+        
         // 从JSON中提取businessData节点
-        JsonNode businessDataNode = jsonNode.get("businessData");
-        if (businessDataNode == null) {
-            throw new RuntimeException("JSON中找不到“businessData”字段");
+        JSONObject businessData = jsonObject.getJSONObject("businessData");
+        if (businessData == null) {
+            throw new RuntimeException("JSON中找不到businessData字段");
         }
 
-        // 从businessData节点中提取quantity节点
-        JsonNode quantityNode = businessDataNode.get("quantity");
-        if (quantityNode == null) {
-            throw new RuntimeException("JSON中找不到“quantity”字段");
+        // 从businessData节点中提取quantity字段
+        String quantityStr = businessData.getString("quantity");
+        if (quantityStr == null) {
+            throw new RuntimeException("JSON中找不到quantity字段");
         }
 
-        // 获取quantity节点的文本值
-        String quantityStr = quantityNode.textValue();
-
-        // 将提取到的值从String类型转换为Double类型，并赋值给类的成员变量
+        // 将提取到的值转换为Double类型
         try {
             this.quantity = Double.parseDouble(quantityStr);
         } catch (NumberFormatException e) {
-            throw new RuntimeException("“quantity”的数字格式无效", e);
+            throw new RuntimeException("quantity的数字格式无效", e);
         }
+    }
+
+    public JSONObject parseResponse(String response) {
+        // 检查响应是否为空
+        if (response == null) {
+            throw new IllegalArgumentException("HTTP响应为空");
+        }
+        return JSONObject.parseObject(response);
     }
 }

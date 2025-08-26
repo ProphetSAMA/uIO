@@ -1,55 +1,62 @@
 package fun.wsss.uio.service.power;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import fun.wsss.uio.mapper.PowerMapper;
+import com.baomidou.mybatisplus.extension.service.IService;
 import fun.wsss.uio.model.Power;
-import fun.wsss.uio.utils.Http;
-import fun.wsss.uio.utils.Json;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+import fun.wsss.uio.model.RoomConfig;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
- * 电量Service
+ * 电量服务接口
  *
  * @author Wsssfun
  */
-@Service
-public interface PowerService {
-
-    Logger logger = Logger.getLogger(PowerService.class.getName());
-
+public interface PowerService extends IService<Power> {
+    
     /**
-     * 查询所有电量数据
+     * 查询并保存电量
      *
-     * @return 电量数据列表
+     * @param room 房间配置
+     */
+    void queryAndSavePower(RoomConfig room);
+    
+    /**
+     * 查询并保存电量
+     *
+     * @param mainArea 主区域
+     * @param subArea 子区域
+     * @param floor 楼层
+     * @param roomNumber 房间号
+     */
+    void queryAndSavePower(int mainArea, int subArea, int floor, int roomNumber);
+    
+    /**
+     * 定时查询电量任务
+     */
+    void scheduledQueryPower();
+    
+    /**
+     * 获取最新电量值
+     *
+     * @param mainArea 主区域
+     * @param subArea 子区域
+     * @param floor 楼层
+     * @param roomNumber 房间号
+     * @return 电量值
+     */
+    Power getLatestPowerValue(int mainArea, int subArea, int floor, int roomNumber);
+    
+    /**
+     * 获取所有电量记录
+     *
+     * @return 电量记录列表
      */
     List<Power> selectAllPowerValue();
-
+    
     /**
-     * 查询最近一周电量数据
+     * 获取最近一周的电量记录
      *
-     * @return 最近一周电量数据
+     * @return 电量记录列表
      */
     List<Power> selectRecentWeekPowerValue();
-
-    /**
-     * 查询最新电量数据
-     *
-     * @return 最新电量数据
-     */
-    ResponseEntity<Double> getLatestPowerValue();
-
-    /**
-     * 插入最新电量数据
-     */
-    void insertPowerValue();
-
 }

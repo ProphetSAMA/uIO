@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const instance = axios.create({
-    baseURL: 'https://api.uio.ink/api',
+    baseURL: 'localhost:8080/api',
     headers: {
         'Content-Type': 'application/json',
     },

@@ -2,7 +2,6 @@ package fun.wsss.uio.service;
 
 import fun.wsss.uio.mapper.MessageMapper;
 import fun.wsss.uio.model.Message;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +16,6 @@ import java.util.List;
 public class MessageService {
     private final MessageMapper messageMapper;
 
-    @Autowired
     public MessageService(MessageMapper messageMapper) {
         this.messageMapper = messageMapper;
     }

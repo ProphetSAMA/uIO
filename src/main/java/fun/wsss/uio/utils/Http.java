@@ -1,62 +1,213 @@
 package fun.wsss.uio.utils;
 
-
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-
-import java.io.IOException;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
+import fun.wsss.uio.model.PowerQueryResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
+import jakarta.annotation.PostConstruct;
+import java.math.BigDecimal;
 
 /**
  * 发送HTTP请求的工具类
  *
  * @author Wsssfun
  */
+@Slf4j
+@Component
 public class Http {
-    public final String response;
+    private final RestTemplate restTemplate;
+    
+    @Value("${power.api.url:https://cloudpaygateway.59wanmei.com:8087/paygateway/smallpaygateway/trade}")
+    private String apiUrl;
+    
+    @Value("${power.api.payproid:953}")
+    private int payproId;
+    
+    @Value("${power.api.schoolcode:1402}")
+    private String schoolCode;
+    
+    @Value("${power.api.timeout:5000}")
+    private int timeout;
 
     public Http() {
-        response = sendPostRequest();
+        this.restTemplate = new RestTemplate();
+    }
+
+    @PostConstruct
+    public void init() {
+        validateConfig();
     }
 
     /**
-     * 发送POST请求
-     *
-     * @return 响应
+     * 根据区域号查询电量
+     * @param areaCode 区域号，格式如 "1-1" 或 "2-1"
+     * @param floor 楼层
+     * @param roomNumber 房间号
+     * @return PowerQueryResult 查询结果
      */
-    public String sendPostRequest() {
-        String result;
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            // 创建一个HttpPost对象并设置请求的URL
-            HttpPost post = new HttpPost("https://cloudpaygateway.59wanmei.com:8087/paygateway/smallpaygateway/trade");
-            post.setHeader("User-Agent", "Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-G973U) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/14.2 Chrome/87.0.4280.141 Mobile Safari/537.36");
-            post.setHeader("Accept", "application/json, text/plain, */*");
-            post.setHeader("Accept-Language", "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2");
-            post.setHeader("Origin", "https://cloudpaygateway.59wanmei.com:8087");
-            post.setHeader("Connection", "keep-alive");
-            post.setHeader("Referer", "https://cloudpaygateway.59wanmei.com:8087/pay/index.html?token=9d50babf-49b2-4c2f-a98f-f09a0d8e4857&_timestamp=1668578948720&customerId=1402");
-            post.setHeader("Sec-Fetch-Dest", "empty");
-            post.setHeader("Sec-Fetch-Mode", "cors");
-            post.setHeader("Sec-Fetch-Site", "same-origin");
-            post.setHeader("TE", "trailers");
-            post.setHeader("Cookie", "SERVERID=b82512854b884d91ab4d85c59fa4706e|1668580570|1668579876");
-            post.setHeader("Content-Type", "application/json;charset=utf-8");
-            post.setHeader("Host", "cloudpaygateway.59wanmei.com:8087");
-            // 设置请求体
-            String json = "{\"timestamp\":\"2022-11-16 14:35:33\",\"method\":\"samllProgramGetRoomState\",\"bizcontent\":\"{\\\"payproid\\\":953,\\\"schoolcode\\\":\\\"1402\\\",\\\"roomverify\\\":\\\"2-1--3-7301\\\",\\\"businesstype\\\":2}\",\"sourceId\":2}";
-            post.setEntity(new StringEntity(json));
-            // 执行请求并获取响应
-            try (CloseableHttpResponse response = httpClient.execute(post)) {
-                result = EntityUtils.toString(response.getEntity());
-            } catch (IOException e) {
-                throw new RuntimeException("获取响应时出现问题：", e);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("请求发送失败：", e);
+    public PowerQueryResult queryPower(String areaCode, int floor, int roomNumber) {
+        validateQueryParams(areaCode, floor, roomNumber);
+        
+        String[] areaParts = areaCode.split("-");
+        return queryPower(
+            Integer.parseInt(areaParts[0]), 
+            Integer.parseInt(areaParts[1]), 
+            floor, 
+            roomNumber
+        );
+    }
+
+    /**
+     * 查询电量
+     */
+    public PowerQueryResult queryPower(int mainArea, int subArea, int floor, int roomNumber) {
+        validateAreaParams(mainArea, subArea, floor, roomNumber);
+        
+        String roomVerify = formatRoomVerify(mainArea, subArea, floor, roomNumber);
+        log.info("开始查询房间[{}]电量", roomVerify);
+        
+        try {
+            String response = executeRequest(roomVerify);
+            return parseResponse(response, roomVerify);
+        } catch (Exception e) {
+            log.error("房间[{}]电量查询异常: {}", roomVerify, e.getMessage(), e);
+            return PowerQueryResult.error("电量查询失败: " + e.getMessage());
         }
-        return result;
+    }
+
+    @Retryable(
+        value = {Exception.class},
+        maxAttempts = 3,
+        backoff = @Backoff(delay = 1000, multiplier = 2)
+    )
+    private String executeRequest(String roomVerify) {
+        HttpHeaders headers = createHeaders();
+        String bizContent = buildBizContent(roomVerify);
+        JSONObject requestBody = buildRequestBody(bizContent);
+        
+        log.debug("请求参数: {}", requestBody.toJSONString());
+        
+        HttpEntity<String> request = new HttpEntity<>(requestBody.toJSONString(), headers);
+        ResponseEntity<String> responseEntity = restTemplate.exchange(
+            apiUrl,
+            HttpMethod.POST,
+            request,
+            String.class
+        );
+        
+        String response = responseEntity.getBody();
+        log.debug("响应数据: {}", response);
+        
+        return response;
+    }
+
+    private HttpHeaders createHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return headers;
+    }
+
+    private String buildBizContent(String roomVerify) {
+        return String.format(
+            "{\"payproid\":%d,\"schoolcode\":\"%s\",\"roomverify\":\"%s\",\"businesstype\":2}",
+            payproId, schoolCode, roomVerify
+        );
+    }
+
+    private JSONObject buildRequestBody(String bizContent) {
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("method", "samllProgramGetRoomState");
+        requestBody.put("bizcontent", bizContent);
+        return requestBody;
+    }
+
+    private String formatRoomVerify(int mainArea, int subArea, int floor, int roomNumber) {
+        return String.format("%d-%d--%d-%d", mainArea, subArea, floor, roomNumber);
+    }
+
+    private PowerQueryResult parseResponse(String response, String roomVerify) {
+        if (!StringUtils.hasText(response)) {
+            return PowerQueryResult.error("响应数据为空");
+        }
+        
+        try {
+            JSONObject jsonResponse = JSON.parseObject(response);
+            String code = jsonResponse.getString("code");
+            String msg = jsonResponse.getString("msg");
+            
+            if (!"0000".equals(code)) {
+                return PowerQueryResult.error(msg);
+            }
+            
+            JSONObject data = jsonResponse.getJSONObject("data");
+            if (data == null) {
+                return PowerQueryResult.error("响应数据格式错误");
+            }
+            
+            BigDecimal value = data.getBigDecimal("value");
+            if (value == null) {
+                return PowerQueryResult.error("电量数据为空");
+            }
+            
+            return PowerQueryResult.success(value, roomVerify);
+        } catch (Exception e) {
+            log.error("响应数据解析失败: {}", e.getMessage(), e);
+            return PowerQueryResult.error("响应数据解析失败");
+        }
+    }
+
+    private void validateConfig() {
+        if (!StringUtils.hasText(apiUrl)) {
+            throw new IllegalStateException("API URL 未配置");
+        }
+        if (payproId <= 0) {
+            throw new IllegalStateException("支付项目ID配置无效");
+        }
+        if (!StringUtils.hasText(schoolCode)) {
+            throw new IllegalStateException("学校代码未配置");
+        }
+    }
+
+    private void validateQueryParams(String areaCode, int floor, int roomNumber) {
+        if (!StringUtils.hasText(areaCode)) {
+            throw new IllegalArgumentException("区域号不能为空");
+        }
+        if (!areaCode.matches("\\d+-\\d+")) {
+            throw new IllegalArgumentException("区域号格式无效");
+        }
+        validateFloorAndRoom(floor, roomNumber);
+    }
+
+    private void validateAreaParams(int mainArea, int subArea, int floor, int roomNumber) {
+        if (mainArea <= 0 || subArea <= 0) {
+            throw new IllegalArgumentException("区域号必须为正整数");
+        }
+        validateFloorAndRoom(floor, roomNumber);
+    }
+
+    private void validateFloorAndRoom(int floor, int roomNumber) {
+        if (floor <= 0) {
+            throw new IllegalArgumentException("楼层必须为正整数");
+        }
+        if (roomNumber <= 0) {
+            throw new IllegalArgumentException("房间号必须为正整数");
+        }
+    }
+}
+
+class PowerQueryException extends RuntimeException {
+    public PowerQueryException(String message) {
+        super(message);
+    }
+    
+    public PowerQueryException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

@@ -11,21 +11,36 @@ spring:
   #数据库配置
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/uio?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-    username: uio
-    password: Qwe!230528
+    username: root
+    password: qwe123.0+-
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
-  data:
+  # Flyway配置
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    locations: classpath:db/migration
+    table: flyway_schema_history
+    validate-on-migrate: true
+  data: # Redis配置
     redis:
       host: 127.0.0.1
       port: 6379
-      password: "qwe123.0+-"
       timeout: 6000
+# mybatis-plus配置
 mybatis-plus:
   global-config:
     db-config:
       id-type: auto
-# Redis配置
+  mapper-locations: classpath*:/mapper/**/*.xml
+  type-aliases-package: fun.wsss.uio.model
+
+power:
+  api:
+    url: https://cloudpaygateway.59wanmei.com:8087/paygateway/smallpaygateway/trade  # 实际的API地址
+    payproid: 953
+    schoolcode: 1402
+

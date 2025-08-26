@@ -48,11 +48,13 @@ import { Lock, User } from '@element-plus/icons-vue';
 import { ElMessage } from 'element-plus';
 import axios from 'axios';
 import { ref, reactive } from 'vue';  // 导入 ref 和 reactive
+import type { FormInstance } from 'element-plus';
+import type { AxiosError } from 'axios';
 
 const router = useRouter();
 const userStore = useUserStore();
 
-const loginFormRef = ref(null);  // 创建 ref
+const loginFormRef = ref<FormInstance | null>(null);
 const loginForm = reactive({
   username: '',
   password: ''
@@ -65,9 +67,12 @@ const loginRules = {
 
 const handleLogin = async () => {
   try {
-    const valid = await loginFormRef.value?.validate();  // 通过 ref 获取表单实例并校验
+    if (!loginFormRef.value) {
+      return;
+    }
+    const valid = await loginFormRef.value.validate();
     if (valid) {
-      const response = await axios.post('https://api.uio.ink/api/users/login', loginForm);
+      const response = await axios.post('http://localhost:8080/api/users/login', loginForm);
       if (response.status === 200) {
         const { token, userId, username } = response.data;
         if (token && userId && username) {
@@ -76,15 +81,29 @@ const handleLogin = async () => {
           userStore.login(username, userId, token);
           ElMessage.success('登录成功！');
           await router.push('/');
+        } else {
+          ElMessage.error('登录失败：服务器返回数据不完整');
         }
       }
     }
   } catch (error) {
     if (!loginForm.username || !loginForm.password) {
       ElMessage.error('请输入账号和密码');
-    } else if (error.response && error.response.data) {
-      ElMessage.error(error.response.data);
+    } else if (error instanceof Error) {
+      const axiosError = error as AxiosError;
+      if (axiosError.response) {
+        if (axiosError.response.status === 401) {
+          ElMessage.error('用户名或密码错误');
+        } else {
+          ElMessage.error((axiosError.response.data as string) || '登录失败，请稍后重试');
+        }
+      } else if (axiosError.request) {
+        ElMessage.error('无法连接到服务器，请检查网络连接');
+      } else {
+        ElMessage.error('登录失败：' + error.message);
+      }
     }
+    console.error('登录错误:', error);
   }
 };
 </script>

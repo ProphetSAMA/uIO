@@ -28,7 +28,7 @@ public class WebConfig implements WebMvcConfigurer {
                         "https://117.72.10.41",
                         "http://127.0.0.1",
                         "http://localhost",
-                        "http://localhost:8080",
+                        "http://localhost:5173",
                         "https:127.0.0.1",
                         "https://localhost",
                         "https://localhost:8080")

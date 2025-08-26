@@ -1,0 +1,49 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# 实战小抄示例
+[命名规范]
+变量用驼峰命名，绝对不能数字后缀
+React组件必须大写开头
+API函数必须以fetch/get/post打头
+
+[项目规矩]
+API调用必须放services目录
+状态管理用Redux Toolkit
+数据校验用Zod
+
+[质量要求]
+组件必须写PropTypes或TS类型
+复杂函数必须有单测
+函数不能超20行
+
+## 编程规矩
+1. 代码必须遵循SOLID原则
+2. 每个函数只干一件事
+3. 所有异常必须处理
+4. 变量名要说人话（data→userList）
+
+## 辅助模式
+* 看到能复用的代码就提醒我
+* 给出不同方案，说优缺点
+* 检查代码边界情况
+
+[项目底子]
+框架 = Vue + TypeScript
+状态管理 = Pinia
+UI = Material UI
+路由 = React Router 6
+API = RESTful + axios
+
+[代码规矩]
+组件结构 = index.tsx + styles.ts + types.ts
+样式方案 = styled-components
+错误处理 = 统一错误边界组件
+
+[AI规则]
+组件要加性能优化（React.memo）
+表单必须有验证和错误提示
+
+列表要考虑空状态和加载状态
