@@ -11,8 +11,8 @@ spring:
   #数据库配置
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/uio?allowPublicKeyRetrieval=true&useSSL=false&serverTimezone=UTC
-    username: uio
-    password: Qwe!230528
+    username: root
+    password: qwe123.0+-
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
