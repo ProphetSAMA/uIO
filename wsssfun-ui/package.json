@@ -16,7 +16,7 @@
     "canvas": "^2.11.2",
     "dayjs": "^1.11.13",
     "echarts": "^5.5.1",
-    "element-plus": "^2.8.2",
+    "element-plus": "^2.11.0",
     "jwt-decode": "^4.0.0",
     "minimist": "^1.2.8",
     "pinia": "^2.2.2",
