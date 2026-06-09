@@ -86,7 +86,7 @@ export default {
 
       // 提交请求到服务端
       try {
-        const response = await axios.post('https://api.uio.ink/api/users/register', formData.value);
+        const response = await axios.post('http://47.122.30.3:8080/api/users/register', formData.value);
         // 注册成功(服务端响应200)
         if (response.status === 200) {
           ElNotification({
