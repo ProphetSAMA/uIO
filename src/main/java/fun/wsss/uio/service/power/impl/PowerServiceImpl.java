@@ -6,6 +6,8 @@ import fun.wsss.uio.model.Power;
 import fun.wsss.uio.service.power.PowerService;
 import fun.wsss.uio.utils.Http;
 import fun.wsss.uio.utils.Json;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,7 @@ import java.util.List;
 @Service
 public class PowerServiceImpl implements PowerService {
 
+    private static final Logger logger = LogManager.getLogger(PowerServiceImpl.class);
     private final PowerMapper powerMapper;
 
     public PowerServiceImpl(PowerMapper powerMapper) {
@@ -93,6 +96,49 @@ public class PowerServiceImpl implements PowerService {
         Double quantityStr = json.quantity;
         logger.info("getLatestPowerValue方法执行结束");
         return ResponseEntity.ok(quantityStr);
+    }
+
+    /**
+     * 查询指定用户的最新电量数据
+     *
+     * @param userId 用户 ID
+     * @return 最新电量数据
+     */
+    @Override
+    public Double getLatestPowerValueByUserId(Long userId) {
+        logger.info("getLatestPowerValueByUserId 方法开始执行，userId: {}", userId);
+        Power power = powerMapper.selectLatestByUserId(userId);
+        Double value = power != null ? power.getValue() : null;
+        logger.info("getLatestPowerValueByUserId 方法执行结束，value: {}", value);
+        return value;
+    }
+
+    /**
+     * 查询指定用户最近一周的电量数据
+     *
+     * @param userId 用户 ID
+     * @return 最近一周电量数据
+     */
+    @Override
+    public List<Power> selectRecentWeekPowerValueByUserId(Long userId) {
+        logger.info("selectRecentWeekPowerValueByUserId 方法开始执行，userId: {}", userId);
+        List<Power> powerList = powerMapper.selectRecentPowerByUserIdAndDays(userId, 7);
+        logger.info("selectRecentWeekPowerValueByUserId 方法执行结束，size: {}", powerList.size());
+        return powerList;
+    }
+
+    /**
+     * 查询指定用户的所有电量数据
+     *
+     * @param userId 用户 ID
+     * @return 所有电量数据
+     */
+    @Override
+    public List<Power> selectAllPowerValueByUserId(Long userId) {
+        logger.info("selectAllPowerValueByUserId 方法开始执行，userId: {}", userId);
+        List<Power> powerList = powerMapper.selectAllByUserId(userId);
+        logger.info("selectAllPowerValueByUserId 方法执行结束，size: {}", powerList.size());
+        return powerList;
     }
 
     /**

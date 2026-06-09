@@ -14,6 +14,8 @@ import lombok.Setter;
 @Getter
 public class Power {
 
+    private Long id;
+    private Long userId;
     private Double value;
     private String querytime;
     @TableField("change_value")
@@ -27,5 +29,10 @@ public class Power {
         this.querytime = queryTime;
     }
 
+    public Power(Long userId, Double powerValue, String queryTime) {
+        this.userId = userId;
+        this.value = powerValue;
+        this.querytime = queryTime;
+    }
 
 }
