@@ -67,7 +67,7 @@ const handleLogin = async () => {
   try {
     const valid = await loginFormRef.value?.validate();  // 通过 ref 获取表单实例并校验
     if (valid) {
-      const response = await axios.post('https://api.uio.ink/api/users/login', loginForm);
+      const response = await axios.post('http://47.122.30.3:8080/api/users/login', loginForm);
       if (response.status === 200) {
         const { token, userId, username } = response.data;
         if (token && userId && username) {
