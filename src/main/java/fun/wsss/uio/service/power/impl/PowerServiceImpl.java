@@ -146,7 +146,17 @@ public class PowerServiceImpl implements PowerService {
      */
     @Override
     public void insertPowerValue() {
-        logger.info("insertPowerValue方法开始执行");
+        insertPowerValue(null);
+    }
+
+    /**
+     * 插入最新电量数据（指定用户）
+     *
+     * @param userId 用户 ID
+     */
+    @Override
+    public void insertPowerValue(Long userId) {
+        logger.info("insertPowerValue方法开始执行，userId: {}", userId);
 
         // 获取Json类中的数据
         Http http = new Http();
@@ -176,12 +186,11 @@ public class PowerServiceImpl implements PowerService {
         }
 
         // 创建Power对象并插入数据库
-        Power power = new Power(quantityStr, formattedDateTime);
+        Power power = new Power(userId, quantityStr, formattedDateTime);
         // 将BigDecimal转换为double存入数据库
         power.setChangeValue(changeValue.doubleValue());
-        logger.info("Power 插入的值 - value: " + power.getValue()
-                + ", querytime: " + power.getQuerytime()
-                + ", changeValue: " + power.getChangeValue());
+        logger.info("Power 插入的值 - userId: {}, value: {}, querytime: {}, changeValue: {}",
+                userId, power.getValue(), power.getQuerytime(), power.getChangeValue());
 
         powerMapper.insert(power);
 

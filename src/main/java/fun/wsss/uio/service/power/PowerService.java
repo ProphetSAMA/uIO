@@ -64,4 +64,11 @@ public interface PowerService {
      */
     void insertPowerValue();
 
+    /**
+     * 插入最新电量数据（指定用户）
+     *
+     * @param userId 用户 ID
+     */
+    void insertPowerValue(Long userId);
+
 }
