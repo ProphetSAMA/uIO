@@ -1,5 +1,6 @@
 package fun.wsss.uio.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
@@ -18,6 +20,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
+
+    @Autowired
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -36,11 +41,17 @@ public class WebSecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/**")
-                        .permitAll() // 允许访问登录和注册页面
-                        .anyRequest().authenticated() // 其他所有请求都需要认证
+                        // 允许公开的认证端点
+                        .requestMatchers("/api/users/login", "/api/users/register").permitAll()
+                        // 允许公开的房间端点（用于选择房间）
+                        .requestMatchers("/api/rooms/**", "/api/buildings/**", "/api/floors/**").permitAll()
+                        // 其他所有请求都需要认证
+                        .anyRequest().authenticated()
                 )
                 .formLogin(withDefaults());
+
+        // 在 UsernamePasswordAuthenticationFilter 之前添加 JWT 过滤器
+        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

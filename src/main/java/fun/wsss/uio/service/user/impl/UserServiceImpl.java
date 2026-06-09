@@ -1,5 +1,6 @@
 package fun.wsss.uio.service.user.impl;
 
+import fun.wsss.uio.config.JwtAuthenticationFilter;
 import fun.wsss.uio.dto.user.UserDTO;
 import fun.wsss.uio.mapper.user.UserMapper;
 import fun.wsss.uio.model.user.User;
@@ -9,6 +10,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,12 +25,10 @@ import java.util.stream.Collectors;
  * @author Wsssfun
  */
 @Service
-public class UserServiceImpl implements UserService {
+public class UserServiceImpl implements UserService, JwtAuthenticationFilter.UserIdExtractor {
 
-    /**
-     * JWT 密钥，使用安全密钥生成
-     */
-    private final SecretKey key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    @Value("${app.jwt.secret:DefaultJwtSecretKeyFor256BitHmacShaAlgorithmPleaseChangeMe}")
+    private String jwtSecret;
 
     @Autowired
     private UserMapper userMapper;
@@ -75,9 +75,11 @@ public class UserServiceImpl implements UserService {
     public String login(String username, String password) {
         User user = userMapper.findByUsername(username);
         if (user != null && bCryptPasswordEncoder.matches(password, user.getPassword())) {
-            // 登录成功，生成 JWT 令牌
+            // 登录成功，生成 JWT 令牌，包含 userId
+            SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes());
             return Jwts.builder()
                     .setSubject(username)
+                    .claim("userId", user.getId())
                     .setIssuedAt(new Date())
                     .setExpiration(new Date(System.currentTimeMillis() + 3600000))
                     .signWith(key, SignatureAlgorithm.HS256)

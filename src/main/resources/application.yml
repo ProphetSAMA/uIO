@@ -28,4 +28,9 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
-# Redis配置
+
+# App configuration
+app:
+  jwt:
+    secret: "${JWT_SECRET:DefaultJwtSecretKeyFor256BitHmacShaAlgorithmPleaseChangeMe}"
+

@@ -1,20 +1,10 @@
 package fun.wsss.uio.service.power;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import fun.wsss.uio.mapper.PowerMapper;
 import fun.wsss.uio.model.Power;
-import fun.wsss.uio.utils.Http;
-import fun.wsss.uio.utils.Json;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * 电量Service
@@ -23,8 +13,6 @@ import java.util.logging.Logger;
  */
 @Service
 public interface PowerService {
-
-    Logger logger = Logger.getLogger(PowerService.class.getName());
 
     /**
      * 查询所有电量数据
@@ -48,8 +36,39 @@ public interface PowerService {
     ResponseEntity<Double> getLatestPowerValue();
 
     /**
+     * 查询指定用户的最新电量数据
+     *
+     * @param userId 用户 ID
+     * @return 最新电量数据
+     */
+    Double getLatestPowerValueByUserId(Long userId);
+
+    /**
+     * 查询指定用户最近一周的电量数据
+     *
+     * @param userId 用户 ID
+     * @return 最近一周电量数据
+     */
+    List<Power> selectRecentWeekPowerValueByUserId(Long userId);
+
+    /**
+     * 查询指定用户的所有电量数据
+     *
+     * @param userId 用户 ID
+     * @return 所有电量数据
+     */
+    List<Power> selectAllPowerValueByUserId(Long userId);
+
+    /**
      * 插入最新电量数据
      */
     void insertPowerValue();
+
+    /**
+     * 插入最新电量数据（指定用户）
+     *
+     * @param userId 用户 ID
+     */
+    void insertPowerValue(Long userId);
 
 }
