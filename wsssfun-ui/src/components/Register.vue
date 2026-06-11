@@ -125,22 +125,23 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { User, Lock, Lightning, Location, OfficeBuilding } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import axios from 'axios'
+import http from '@/utils/axios'
+import { API_ROUTES } from '@/config/api'
+import { useRoomStore } from '@/store/roomStore'
 
 const router = useRouter()
+const roomStore = useRoomStore()
 const formRef = ref(null)
 const loading = ref(false)
 
-// 房间数据
-const allRooms = ref([])
-const buildings = ref([])
-const floors = ref([])
-const rooms = ref([])
+const buildings = ref<any[]>([])
+const floors = ref<any[]>([])
+const rooms = ref<any[]>([])
 
 const form = reactive({
   username: '',
@@ -195,18 +196,8 @@ const selectedRoomSummary = computed(() => {
 // 加载房间数据
 onMounted(async () => {
   try {
-    // 优先从 localStorage 加载
-    const cached = localStorage.getItem('rooms')
-    if (cached) {
-      allRooms.value = JSON.parse(cached)
-    } else {
-      const response = await axios.get('http://localhost:8080/api/rooms')
-      allRooms.value = response.data
-      localStorage.setItem('rooms', JSON.stringify(allRooms.value))
-    }
-
-    // 提取楼栋列表
-    buildings.value = allRooms.value.map(b => ({
+    await roomStore.fetchRooms()
+    buildings.value = roomStore.rooms.map((b: any) => ({
       value: b.value,
       label: b.label
     }))
@@ -223,7 +214,7 @@ const onBuildingChange = (buildingId) => {
   floors.value = []
   rooms.value = []
 
-  const building = allRooms.value.find(b => b.value === buildingId)
+  const building = roomStore.rooms.find((b: any) => b.value === buildingId)
   if (building?.children) {
     floors.value = building.children.map(f => ({
       value: f.value,
@@ -237,7 +228,7 @@ const onFloorChange = (floorId) => {
   form.roomId = null
   rooms.value = []
 
-  const building = allRooms.value.find(b => b.value === form.buildingId)
+  const building = roomStore.rooms.find((b: any) => b.value === form.buildingId)
   const floor = building?.children?.find(f => f.value === floorId)
   if (floor?.children) {
     rooms.value = floor.children.map(r => ({
@@ -256,7 +247,7 @@ const handleRegister = async () => {
 
     loading.value = true
     try {
-      const response = await axios.post('http://localhost:8080/api/users/register', {
+      const response = await http.post(API_ROUTES.register, {
         username: form.username,
         password: form.password,
         selectedRoom: [form.buildingId, form.floorId, form.roomId]

@@ -13,7 +13,6 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import {useUserStore} from "./store/user";
 
 
-import './assets/styles/global.css'; // 引入全局样式
 
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {

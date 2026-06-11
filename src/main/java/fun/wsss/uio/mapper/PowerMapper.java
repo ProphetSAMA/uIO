@@ -3,6 +3,7 @@ package fun.wsss.uio.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import fun.wsss.uio.model.Power;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
 /**
@@ -20,5 +21,8 @@ public interface PowerMapper extends BaseMapper<Power> {
      */
     @Select("SELECT * FROM power ORDER BY queryTime DESC LIMIT 1")
     Power selectLastRecord();
+
+    @Select("SELECT * FROM power WHERE room_verify = #{roomVerify} ORDER BY queryTime DESC LIMIT 1")
+    Power selectLastRecordByRoom(@Param("roomVerify") String roomVerify);
 
 }

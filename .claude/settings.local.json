@@ -18,7 +18,14 @@
       "Bash(taskkill //F //IM redis-server.exe)",
       "Bash(net start *)",
       "Bash(\"/c/Redis/redis-server.exe\" --service-uninstall --service-name Redis)",
-      "Bash(\"/c/Redis/redis-server.exe\" --service-install \"/c/Redis/redis.windows.conf\" --service-name Redis)"
+      "Bash(\"/c/Redis/redis-server.exe\" --service-install \"/c/Redis/redis.windows.conf\" --service-name Redis)",
+      "Bash(npm run *)",
+      "Bash(\"/c/Program Files/nodejs/node.exe\" --version)",
+      "Bash(\"/c/nvm4w/nodejs/node.exe\" --version)",
+      "Bash(\"/c/nvm4w/nodejs/v22.19.0/node.exe\" --version)",
+      "Bash(cmd //c \"where node\")",
+      "Bash(export PATH=\"/c/nvm4w/nodejs:/c/Users/Administrator/AppData/Local/nvm:$PATH\")",
+      "Bash(cmd *)"
     ]
   }
 }

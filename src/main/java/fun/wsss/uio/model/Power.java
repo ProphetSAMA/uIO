@@ -18,6 +18,8 @@ public class Power {
     private String querytime;
     @TableField("change_value")
     private Double changeValue;
+    @TableField("room_verify")
+    private String roomVerify;
 
     public Power() {
     }

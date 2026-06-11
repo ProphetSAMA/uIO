@@ -23,11 +23,27 @@ public interface PowerService {
     List<Power> selectAllPowerValue();
 
     /**
+     * 查询指定房间的所有电量数据
+     *
+     * @param roomVerify 房间验证标识
+     * @return 电量数据列表
+     */
+    List<Power> selectAllPowerValueByRoom(String roomVerify);
+
+    /**
      * 查询最近一周电量数据
      *
      * @return 最近一周电量数据
      */
     List<Power> selectRecentWeekPowerValue();
+
+    /**
+     * 查询指定房间最近一周电量数据
+     *
+     * @param roomVerify 房间验证标识
+     * @return 最近一周电量数据
+     */
+    List<Power> selectRecentWeekPowerValueByRoom(String roomVerify);
 
     /**
      * 查询最新电量数据

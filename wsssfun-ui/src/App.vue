@@ -1,37 +1,45 @@
-<template xmlns=''>
-<!--  <AppHeader :is-logged-in="isLoggedIn"/>-->
-      <router-view />
-    <p class="website">
-      <a href="https://beian.miit.gov.cn/#/Integrated/index">豫ICP备2024093362号-1</a>
-    </p>
+<template>
+  <router-view />
+  <p class="website">
+    <a href="https://beian.miit.gov.cn/#/Integrated/index">豫ICP备2024093362号-1</a>
+  </p>
 </template>
 
-<script>
-import {defineComponent} from 'vue';
-import AppHeader from './components/AppHead.vue';
-
-export default defineComponent({
-  components: { AppHeader },
-  data() {
-    return {
-      // 默认未登录
-      isLoggedIn: false
-    };
-  },
-  created() {
-    // 检查是否已登录
-    const token = localStorage.getItem('token');
-    // 存在token则表示已登录
-    if (token) {
-      this.isLoggedIn = true;
-    }
-  }
-})
+<script setup lang="ts">
 </script>
 
 <style>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+#app {
+  min-height: 100vh;
+}
+
 .website {
   text-align: center;
-  margin-top: -20px;
+  padding: 16px 0;
+}
+
+.website a {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.2s;
+}
+
+.website a:hover {
+  color: rgba(255, 255, 255, 0.8);
 }
 </style>

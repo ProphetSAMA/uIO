@@ -54,13 +54,14 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/store/user.js'
+import { useUserStore } from '@/store/user'
 import { User, Lock, Lightning } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
-import axios from 'axios'
+import http from '@/utils/axios'
+import { API_ROUTES } from '@/config/api'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -90,7 +91,7 @@ const handleLogin = async () => {
 
     loading.value = true
     try {
-      const response = await axios.post('http://localhost:8080/api/users/login', form)
+      const response = await http.post(API_ROUTES.login, form)
       if (response.status === 200) {
         const { token, userId, username } = response.data
         if (token && userId && username) {

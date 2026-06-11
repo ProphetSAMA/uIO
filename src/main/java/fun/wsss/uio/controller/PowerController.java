@@ -42,25 +42,27 @@ public class PowerController {
     }
 
     /**
-     * 查询所有电量数据
+     * 查询指定用户房间的所有电量数据
      *
+     * @param userId 用户ID
      * @return 电量数据列表
      */
     @GetMapping("/all-power")
-    public ResponseEntity<List<Power>> selectAllPowerValues() {
-        List<Power> powerList = powerService.selectAllPowerValue();
-        return ResponseEntity.ok(powerList);
+    public ResponseEntity<List<Power>> selectAllPowerValues(@RequestParam Long userId) {
+        String roomVerify = getRoomVerifyByUserId(userId);
+        return ResponseEntity.ok(powerService.selectAllPowerValueByRoom(roomVerify));
     }
 
     /**
-     * 查询最近一周电量数据
+     * 查询指定用户房间最近一周电量数据
      *
+     * @param userId 用户ID
      * @return 最近一周电量数据
      */
     @GetMapping("/recent-week-power")
-    public ResponseEntity<List<Power>> selectRecentWeekPowerValues() {
-        List<Power> powerList = powerService.selectRecentWeekPowerValue();
-        return ResponseEntity.ok(powerList);
+    public ResponseEntity<List<Power>> selectRecentWeekPowerValues(@RequestParam Long userId) {
+        String roomVerify = getRoomVerifyByUserId(userId);
+        return ResponseEntity.ok(powerService.selectRecentWeekPowerValueByRoom(roomVerify));
     }
 
     /**

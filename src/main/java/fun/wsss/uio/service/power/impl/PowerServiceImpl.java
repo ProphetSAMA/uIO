@@ -47,6 +47,19 @@ public class PowerServiceImpl implements PowerService {
     }
 
     /**
+     * 查询指定房间的所有数据
+     *
+     * @param roomVerify 房间验证标识
+     * @return 指定房间的数据
+     */
+    @Override
+    public List<Power> selectAllPowerValueByRoom(String roomVerify) {
+        QueryWrapper<Power> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("room_verify", roomVerify).ne("change_value", 0);
+        return powerMapper.selectList(queryWrapper);
+    }
+
+    /**
      * 查询近一周内 change_value 非零的数据
      *
      * @return 近一周非零 change_value 的数据
@@ -68,6 +81,26 @@ public class PowerServiceImpl implements PowerService {
 
         logger.info("selectRecentWeekPowerValue 方法执行结束");
         return powerList;
+    }
+
+    /**
+     * 查询指定房间近一周内 change_value 非零的数据
+     *
+     * @param roomVerify 房间验证标识
+     * @return 指定房间近一周的数据
+     */
+    @Override
+    public List<Power> selectRecentWeekPowerValueByRoom(String roomVerify) {
+        LocalDateTime oneWeekAgo = LocalDateTime.now().minusDays(7);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDateTime = oneWeekAgo.format(formatter);
+
+        QueryWrapper<Power> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("room_verify", roomVerify)
+                .ge("querytime", formattedDateTime)
+                .ne("change_value", 0);
+
+        return powerMapper.selectList(queryWrapper);
     }
 
 
@@ -110,7 +143,7 @@ public class PowerServiceImpl implements PowerService {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         String formattedDateTime = currentDateTime.format(formatter);
 
-        Power lastPower = powerMapper.selectLastRecord();
+        Power lastPower = powerMapper.selectLastRecordByRoom(roomVerify);
         BigDecimal changeValue = BigDecimal.ZERO;
 
         if (lastPower != null) {
@@ -124,6 +157,7 @@ public class PowerServiceImpl implements PowerService {
 
         Power power = new Power(quantityStr, formattedDateTime);
         power.setChangeValue(changeValue.doubleValue());
+        power.setRoomVerify(roomVerify);
         logger.info("Power 插入的值 - value: " + power.getValue()
                 + ", querytime: " + power.getQuerytime()
                 + ", changeValue: " + power.getChangeValue());
