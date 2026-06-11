@@ -4,7 +4,21 @@
       "Bash(mysql -u root -pqwe123.0+- uio)",
       "Read(//c/Program Files/MySQL/**)",
       "Read(//c/Program Files \\(x86\\)/MySQL/**)",
-      "Bash(/c/Program Files/MySQL/MySQL Server 8.0/bin/mysql.exe *)"
+      "Bash(/c/Program Files/MySQL/MySQL Server 8.0/bin/mysql.exe *)",
+      "Bash(redis-cli ping *)",
+      "Read(//c/Program Files/**)",
+      "Read(//c//**)",
+      "Bash(where redis-server *)",
+      "Bash(sc query *)",
+      "Bash(docker --version)",
+      "Bash(choco --version)",
+      "Bash(powershell *)",
+      "Bash(\"/c/Redis/redis-server.exe\" \"/c/Redis/redis.windows.conf\")",
+      "Bash(\"/c/Redis/redis-cli.exe\" -a \"qwe123.0+-\" ping)",
+      "Bash(taskkill //F //IM redis-server.exe)",
+      "Bash(net start *)",
+      "Bash(\"/c/Redis/redis-server.exe\" --service-uninstall --service-name Redis)",
+      "Bash(\"/c/Redis/redis-server.exe\" --service-install \"/c/Redis/redis.windows.conf\" --service-name Redis)"
     ]
   }
 }

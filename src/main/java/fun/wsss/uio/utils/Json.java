@@ -11,9 +11,8 @@ import java.io.IOException;
  * @author Wsssfun
  */
 public class Json {
-    public Double quantity;
-
     final ObjectMapper objectMapper = new ObjectMapper();
+    public Double quantity;
 
     /**
      * 处理HTTP响应并提取电量值
@@ -47,7 +46,7 @@ public class Json {
         try {
             this.quantity = Double.parseDouble(quantityStr);
         } catch (NumberFormatException e) {
-            throw new RuntimeException(""quantity"的数字格式无效", e);
+            throw new RuntimeException(quantity+"的数字格式无效", e);
         }
     }
 }

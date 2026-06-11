@@ -85,7 +85,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public String login(String username, String password) {
         User user = userMapper.findByUsername(username);
-        if (user != null && bCryptPasswordEncoder.matches(password, user.getPassword())) {
+        if (user == null) {
+            return null;
+        }
+
+        // 验证密码：支持 BCrypt 加密和明文密码
+        boolean passwordMatches = false;
+        String storedPassword = user.getPassword();
+
+        // 先尝试 BCrypt 验证
+        if (storedPassword.startsWith("$2a$") || storedPassword.startsWith("$2b$") || storedPassword.startsWith("$2y$")) {
+            passwordMatches = bCryptPasswordEncoder.matches(password, storedPassword);
+        } else {
+            // 明文密码比较（兼容旧数据）
+            passwordMatches = password.equals(storedPassword);
+        }
+
+        if (passwordMatches) {
             // 登录成功，生成 JWT 令牌
             return Jwts.builder()
                     .setSubject(username)
@@ -93,9 +109,8 @@ public class UserServiceImpl implements UserService {
                     .setExpiration(new Date(System.currentTimeMillis() + 3600000))
                     .signWith(key, SignatureAlgorithm.HS256)
                     .compact();
-        } else {
-            return null;
         }
+        return null;
     }
 
     /**
@@ -115,6 +130,7 @@ public class UserServiceImpl implements UserService {
             return "未知房间";
         }
 
+        // 格式：7号楼3层01室
         return building.getName() + floor.getName() + room.getRoomNumber() + "室";
     }
 

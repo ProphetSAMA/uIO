@@ -41,7 +41,7 @@ public class Http {
             post.setHeader("Content-Type", "application/json;charset=utf-8");
             post.setHeader("Host", "cloudpaygateway.59wanmei.com:8087");
 
-            String json = "{\"timestamp\":\"2022-11-16 14:35:33\",\"method\":\"samllProgramGetRoomState\",\"bizcontent\":\"{\\\"payproid\\\":953,\\\"schoolcode\\\":\\\"1402\\\",\\\"roomverify\\\":\\\"" + roomVerify + "\\\",\\\"businesstype\\\":2}\",\"sourceId\":2}";
+            String json = "{\"method\":\"samllProgramGetRoomState\",\"bizcontent\":\"{\\\"payproid\\\":953,\\\"schoolcode\\\":\\\"1402\\\",\\\"roomverify\\\":\\\"" + roomVerify + "\\\",\\\"businesstype\\\":2}\"}";
             post.setEntity(new StringEntity(json));
 
             try (CloseableHttpResponse response = httpClient.execute(post)) {

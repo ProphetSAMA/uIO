@@ -1,11 +1,13 @@
 package fun.wsss.uio.utils;
 
 import fun.wsss.uio.mapper.room.BuildingMapper;
+import fun.wsss.uio.mapper.room.FloorMapper;
 import fun.wsss.uio.mapper.room.RoomMapper;
 import fun.wsss.uio.mapper.user.UserMapper;
 import fun.wsss.uio.mapper.PowerMapper;
 import fun.wsss.uio.model.Power;
 import fun.wsss.uio.model.room.Building;
+import fun.wsss.uio.model.room.Floor;
 import fun.wsss.uio.model.room.Room;
 import fun.wsss.uio.model.user.User;
 import fun.wsss.uio.service.power.PowerService;
@@ -44,6 +46,9 @@ public class ScheduledTasks {
     @Autowired
     private BuildingMapper buildingMapper;
 
+    @Autowired
+    private FloorMapper floorMapper;
+
     public ScheduledTasks(PowerService powerService) {
         this.powerService = powerService;
         this.startTime = LocalDateTime.now();
@@ -58,10 +63,11 @@ public class ScheduledTasks {
         List<User> users = userMapper.getAllUser();
         for (User user : users) {
             Room room = roomMapper.selectById(user.getRoomId());
+            Floor floor = floorMapper.selectById(user.getFloorId());
             Building building = buildingMapper.selectById(user.getBuildingId());
-            if (room != null && building != null) {
+            if (room != null && floor != null && building != null) {
                 try {
-                    String roomVerify = RoomVerifyUtil.generateRoomVerify(building, room);
+                    String roomVerify = RoomVerifyUtil.generateRoomVerify(building, floor, room);
                     powerService.insertPowerValue(roomVerify);
                     logger.info("定时任务执行成功 - 用户: {}, 房间: {}", user.getUsername(), roomVerify);
                 } catch (Exception e) {

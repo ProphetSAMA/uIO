@@ -1,10 +1,12 @@
 package fun.wsss.uio.controller;
 
 import fun.wsss.uio.mapper.room.BuildingMapper;
+import fun.wsss.uio.mapper.room.FloorMapper;
 import fun.wsss.uio.mapper.room.RoomMapper;
 import fun.wsss.uio.mapper.user.UserMapper;
 import fun.wsss.uio.model.Power;
 import fun.wsss.uio.model.room.Building;
+import fun.wsss.uio.model.room.Floor;
 import fun.wsss.uio.model.room.Room;
 import fun.wsss.uio.model.user.User;
 import fun.wsss.uio.service.power.PowerService;
@@ -28,13 +30,15 @@ public class PowerController {
     private final UserMapper userMapper;
     private final RoomMapper roomMapper;
     private final BuildingMapper buildingMapper;
+    private final FloorMapper floorMapper;
 
     @Autowired
-    public PowerController(PowerService powerService, UserMapper userMapper, RoomMapper roomMapper, BuildingMapper buildingMapper) {
+    public PowerController(PowerService powerService, UserMapper userMapper, RoomMapper roomMapper, BuildingMapper buildingMapper, FloorMapper floorMapper) {
         this.powerService = powerService;
         this.userMapper = userMapper;
         this.roomMapper = roomMapper;
         this.buildingMapper = buildingMapper;
+        this.floorMapper = floorMapper;
     }
 
     /**
@@ -88,11 +92,16 @@ public class PowerController {
             throw new RuntimeException("房间不存在");
         }
 
+        Floor floor = floorMapper.selectById(user.getFloorId());
+        if (floor == null) {
+            throw new RuntimeException("楼层不存在");
+        }
+
         Building building = buildingMapper.selectById(user.getBuildingId());
         if (building == null) {
             throw new RuntimeException("楼栋不存在");
         }
 
-        return RoomVerifyUtil.generateRoomVerify(building, room);
+        return RoomVerifyUtil.generateRoomVerify(building, floor, room);
     }
 }

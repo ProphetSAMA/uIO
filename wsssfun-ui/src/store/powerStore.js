@@ -13,7 +13,7 @@ export const usePowerStore = defineStore('powerStore', {
             try {
                 this.loading = true;
                 // Fetch data from API
-                const response = await fetch('127.0.0.1/api/all-power');
+                const response = await fetch('http://localhost:8080/api/all-power');
                 const data = await response.json();
                 this.tableData = Array.isArray(data) ? data : []; // Ensure data is an array
             } catch (error) {
@@ -30,7 +30,7 @@ export const usePowerStore = defineStore('powerStore', {
                     throw new Error('用户未登录');
                 }
                 // Fetch API value with userId
-                const response = await fetch(`127.0.0.1/api/latest-power?userId=${userId}`);
+                const response = await fetch(`http://localhost:8080/api/latest-power?userId=${userId}`);
                 this.apiValue = await response.json();
             } catch (error) {
                 this.errorMessages = error.message;
