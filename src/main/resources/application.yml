@@ -28,4 +28,10 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+
+# JWT配置
+jwt:
+  secret: "uIO-SecretKey-2024-ChangeInProduction-UseRandom256BitString"
+  expiration: 3600000
+
 # Redis配置
