@@ -11,8 +11,7 @@ import zhCn from 'element-plus/es/locale/lang/zh-cn';
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 import {useUserStore} from "./store/user";
-
-
+import {useThemeStore} from "./store/theme";
 
 const app = createApp(App);
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
@@ -25,6 +24,9 @@ app.use(router);
 
 const userStore = useUserStore();
 userStore.initialize();
+
+const themeStore = useThemeStore();
+themeStore.init();
 
 app.use(ElementPlus, {
     locale: zhCn,

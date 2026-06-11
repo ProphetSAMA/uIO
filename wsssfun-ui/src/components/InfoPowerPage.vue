@@ -14,17 +14,17 @@ import PowerTable from '@/components/dashboard/PowerTable.vue'
 
 <style scoped>
 .glass-card {
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--card-bg);
   backdrop-filter: blur(20px);
   border-radius: 20px;
   padding: 24px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--card-shadow);
 }
 
 .card-title {
   margin: 0 0 20px;
   font-size: 18px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text-primary);
 }
 </style>

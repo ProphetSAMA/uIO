@@ -1,53 +1,57 @@
 <template>
   <div>
-    <div v-if="paginatedData.length > 0">
-      <el-table
-        :data="paginatedData"
-        :header-cell-style="headerStyle"
-        :row-style="rowStyle"
-        style="width: 100%; border-radius: 12px; overflow: hidden;"
-      >
-        <el-table-column label="时间" prop="querytime" min-width="160" />
-        <el-table-column label="剩余电量" prop="value" min-width="120">
-          <template #default="{ row }">
-            <span class="value-cell">{{ row.value }} kWh</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="变化" prop="usageValue" min-width="120">
-          <template #default="{ row }">
-            <span :class="Number(row.usageValue) > 0 ? 'change-positive' : 'change-negative'">
-              {{ Number(row.usageValue) > 0 ? '+' : '' }}{{ row.usageValue }} kWh
-            </span>
-          </template>
-        </el-table-column>
-      </el-table>
+    <el-skeleton :loading="loading" animated :rows="5">
+      <template #template>
+        <div style="padding: 8px 0;">
+          <el-skeleton-item variant="rect" style="width: 100%; height: 42px; border-radius: 8px 8px 0 0; margin-bottom: 2px;" v-for="i in 6" :key="i" />
+        </div>
+      </template>
+      <template #default>
+        <div v-if="paginatedData.length > 0">
+          <el-table
+            :data="paginatedData"
+            :header-cell-style="headerStyle"
+            :row-style="rowStyle"
+            style="width: 100%; border-radius: 12px; overflow: hidden;"
+          >
+            <el-table-column label="时间" prop="querytime" min-width="160" />
+            <el-table-column label="剩余电量" prop="value" min-width="120">
+              <template #default="{ row }">
+                <span class="value-cell">{{ row.value }} kWh</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="变化" prop="usageValue" min-width="120">
+              <template #default="{ row }">
+                <span :class="Number(row.usageValue) > 0 ? 'change-positive' : 'change-negative'">
+                  {{ Number(row.usageValue) > 0 ? '+' : '' }}{{ row.usageValue }} kWh
+                </span>
+              </template>
+            </el-table-column>
+          </el-table>
 
-      <el-pagination
-        v-if="showPagination && totalItems > pageSize"
-        :current-page="currentPage"
-        :page-size="pageSize"
-        :total="totalItems"
-        background
-        style="margin-top: 16px; justify-content: center;"
-        layout="total, prev, pager, next"
-        @current-change="handlePageChange"
-      />
-    </div>
+          <el-pagination
+            v-if="showPagination && totalItems > pageSize"
+            :current-page="currentPage"
+            :page-size="pageSize"
+            :total="totalItems"
+            background
+            style="margin-top: 16px; justify-content: center;"
+            layout="total, prev, pager, next"
+            @current-change="handlePageChange"
+          />
+        </div>
 
-    <div v-else-if="loading" class="empty-state">
-      <el-icon :size="32" class="loading-icon"><Loading /></el-icon>
-      <span>加载中...</span>
-    </div>
+        <div v-else-if="errorMessages" class="empty-state error">
+          <span>{{ errorMessages }}</span>
+        </div>
 
-    <div v-else-if="errorMessages" class="empty-state error">
-      <span>{{ errorMessages }}</span>
-    </div>
+        <div v-else class="empty-state">
+          <span>暂无数据</span>
+        </div>
+      </template>
+    </el-skeleton>
 
-    <div v-else class="empty-state">
-      <span>暂无数据</span>
-    </div>
-
-    <div v-if="showTotal && totalUsage > 0" class="total-badge">
+    <div v-if="showTotal && totalUsage > 0 && !loading" class="total-badge">
       <span class="total-label">总使用量</span>
       <span class="total-value">{{ totalUsage.toFixed(2) }} kWh</span>
     </div>
@@ -57,7 +61,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { usePowerStore } from '@/store/powerStore'
-import { Loading } from '@element-plus/icons-vue'
 
 const props = withDefaults(defineProps<{
   showPagination?: boolean
@@ -133,7 +136,7 @@ const handlePageChange = (page: number) => {
 <style scoped>
 .value-cell {
   font-weight: 600;
-  color: #2d3748;
+  color: var(--text-primary);
 }
 
 .change-positive {
@@ -159,7 +162,7 @@ const handlePageChange = (page: number) => {
 
 .total-label {
   font-size: 13px;
-  color: #718096;
+  color: var(--text-secondary);
 }
 
 .total-value {
@@ -174,26 +177,23 @@ const handlePageChange = (page: number) => {
   align-items: center;
   gap: 8px;
   padding: 40px;
-  color: #718096;
+  color: var(--text-secondary);
 }
 
 .empty-state.error {
   color: #f5576c;
 }
 
-.loading-icon {
-  animation: spin 1s linear infinite;
-  color: #667eea;
-}
-
-@keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
-}
-
 :deep(.el-table) {
-  --el-table-border-color: #f0f0f0;
-  --el-table-row-hover-bg-color: #f8f0ff;
+  --el-table-border-color: var(--table-border);
+  --el-table-row-hover-bg-color: var(--table-hover);
+  --el-table-bg-color: transparent;
+  --el-table-tr-bg-color: transparent;
+  --el-table-header-bg-color: transparent;
+}
+
+html.dark :deep(.el-table) {
+  color: var(--text-primary);
 }
 
 :deep(.el-pagination) {

@@ -8,7 +8,13 @@
         <span class="header-subtitle">校园电费管理系统</span>
       </div>
       <div class="header-right">
-        <div class="user-badge">
+        <el-button class="theme-btn" @click="themeStore.toggleMode()">
+          <el-icon :size="16">
+            <Sunny v-if="themeStore.isDark" />
+            <Moon v-else />
+          </el-icon>
+        </el-button>
+        <div class="user-badge" @click="router.push('/profile')">
           <div class="user-avatar">{{ userStore.username?.charAt(0)?.toUpperCase() || 'U' }}</div>
           <div class="user-details">
             <span class="user-name">{{ userStore.username }}</span>
@@ -42,6 +48,14 @@
             <el-icon><List /></el-icon>
             <span>详细数据</span>
           </div>
+          <div
+            class="nav-item"
+            :class="{ active: activeMenu === '3' }"
+            @click="router.push('/profile')"
+          >
+            <el-icon><User /></el-icon>
+            <span>个人中心</span>
+          </div>
         </nav>
       </aside>
 
@@ -57,17 +71,20 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/store/user'
+import { useThemeStore } from '@/store/theme'
 import http from '@/utils/axios'
 import { API_ROUTES } from '@/config/api'
-import { Lightning, SwitchButton, DataLine, List } from '@element-plus/icons-vue'
+import { Lightning, SwitchButton, DataLine, List, User, Sunny, Moon } from '@element-plus/icons-vue'
 
 const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
+const themeStore = useThemeStore()
 const roomDisplay = ref('')
 
 const activeMenu = computed(() => {
   if (route.path === '/info-power') return '2'
+  if (route.path === '/profile') return '3'
   return '1'
 })
 
@@ -105,9 +122,9 @@ onMounted(() => {
   justify-content: space-between;
   padding: 0 32px;
   height: 64px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--header-bg);
   backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid var(--header-border);
 }
 
 .header-left {
@@ -136,13 +153,34 @@ onMounted(() => {
   gap: 16px;
 }
 
+.theme-btn {
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  color: #fff;
+  border-radius: 10px;
+  padding: 8px;
+  height: auto;
+}
+
+.theme-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
 .user-badge {
   display: flex;
   align-items: center;
   gap: 10px;
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--badge-bg);
   border-radius: 12px;
   padding: 6px 14px 6px 6px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.user-badge:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
 .user-avatar {
@@ -180,8 +218,8 @@ onMounted(() => {
 }
 
 .logout-btn {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
   color: #fff;
   border-radius: 10px;
   padding: 8px;
@@ -205,8 +243,8 @@ onMounted(() => {
 .app-sidebar {
   width: 200px;
   padding: 20px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  background: var(--sidebar-bg);
+  border-right: 1px solid var(--sidebar-border);
 }
 
 .sidebar-nav {
@@ -229,12 +267,12 @@ onMounted(() => {
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.1);
+  background: var(--nav-hover-bg);
   color: rgba(255, 255, 255, 0.9);
 }
 
 .nav-item.active {
-  background: rgba(255, 255, 255, 0.15);
+  background: var(--nav-active-bg);
   color: #fff;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
