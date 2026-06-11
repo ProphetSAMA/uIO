@@ -1,10 +1,15 @@
 package fun.wsss.uio.service.user.impl;
 
 import fun.wsss.uio.dto.user.UserDTO;
+import fun.wsss.uio.mapper.room.BuildingMapper;
+import fun.wsss.uio.mapper.room.FloorMapper;
+import fun.wsss.uio.mapper.room.RoomMapper;
 import fun.wsss.uio.mapper.user.UserMapper;
+import fun.wsss.uio.model.room.Building;
+import fun.wsss.uio.model.room.Floor;
+import fun.wsss.uio.model.room.Room;
 import fun.wsss.uio.model.user.User;
 import fun.wsss.uio.service.user.UserService;
-import fun.wsss.uio.utils.RoomFormatUtil;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -34,6 +39,12 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
     @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+    @Autowired
+    private BuildingMapper buildingMapper;
+    @Autowired
+    private FloorMapper floorMapper;
+    @Autowired
+    private RoomMapper roomMapper;
 
     /**
      * 用户注册
@@ -88,6 +99,26 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
+     * 格式化房间显示信息
+     * 格式：楼栋名 + 楼层名 + 房间名
+     * 例如：7号楼3层301室
+     *
+     * @param user 用户
+     * @return 格式化后的房间显示
+     */
+    private String formatRoomDisplay(User user) {
+        Building building = buildingMapper.selectById(user.getBuildingId());
+        Floor floor = floorMapper.selectById(user.getFloorId());
+        Room room = roomMapper.selectById(user.getRoomId());
+
+        if (building == null || floor == null || room == null) {
+            return "未知房间";
+        }
+
+        return building.getName() + floor.getName() + room.getRoomNumber() + "室";
+    }
+
+    /**
      * 将 User 对象转换为 UserDTO 对象
      *
      * @param user 用户
@@ -97,13 +128,11 @@ public class UserServiceImpl implements UserService {
         if (user == null) {
             return null;
         }
-        // 格式化房间信息
-        String formattedRoomDisplay = RoomFormatUtil.formatRoomDisplay(user.getFloorId(), user.getRoomId());
         // 创建 UserDTO 对象
         UserDTO userDTO = new UserDTO();
         userDTO.setId(user.getId());
         userDTO.setUsername(user.getUsername());
-        userDTO.setRoomDisplay(formattedRoomDisplay);
+        userDTO.setRoomDisplay(formatRoomDisplay(user));
         // 返回 UserDTO 对象
         return userDTO;
     }
@@ -146,16 +175,6 @@ public class UserServiceImpl implements UserService {
         List<User> users = userMapper.getAllUser();
 
         // 转换为 UserDTO 列表
-        return users.stream().map(user -> {
-            // 创建 UserDTO 对象
-            UserDTO userDTO = new UserDTO();
-            userDTO.setId(user.getId());
-            userDTO.setUsername(user.getUsername());
-            // 格式化房间信息
-            userDTO.setRoomDisplay(RoomFormatUtil.formatRoomDisplay(user.getFloorId(), user.getRoomId()));
-            // 返回 UserDTO 对象
-            return userDTO;
-            // 转换为 List
-        }).collect(Collectors.toList());
+        return users.stream().map(this::convertToUserDTO).collect(Collectors.toList());
     }
 }

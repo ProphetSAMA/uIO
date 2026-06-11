@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mysql -u root -pqwe123.0+- uio)",
+      "Read(//c/Program Files/MySQL/**)",
+      "Read(//c/Program Files \\(x86\\)/MySQL/**)",
+      "Bash(/c/Program Files/MySQL/MySQL Server 8.0/bin/mysql.exe *)"
+    ]
+  }
+}

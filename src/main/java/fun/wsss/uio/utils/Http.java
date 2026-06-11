@@ -16,21 +16,16 @@ import java.io.IOException;
  * @author Wsssfun
  */
 public class Http {
-    public final String response;
-
-    public Http() {
-        response = sendPostRequest();
-    }
 
     /**
-     * 发送POST请求
+     * 发送POST请求查询房间电量状态
      *
-     * @return 响应
+     * @param roomVerify 房间验证标识
+     * @return 响应内容
      */
-    public String sendPostRequest() {
+    public String sendPostRequest(String roomVerify) {
         String result;
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            // 创建一个HttpPost对象并设置请求的URL
             HttpPost post = new HttpPost("https://cloudpaygateway.59wanmei.com:8087/paygateway/smallpaygateway/trade");
             post.setHeader("User-Agent", "Mozilla/5.0 (Linux; Android 11; SAMSUNG SM-G973U) AppleWebKit/537.36 (KHTML, like Gecko) SamsungBrowser/14.2 Chrome/87.0.4280.141 Mobile Safari/537.36");
             post.setHeader("Accept", "application/json, text/plain, */*");
@@ -45,10 +40,10 @@ public class Http {
             post.setHeader("Cookie", "SERVERID=b82512854b884d91ab4d85c59fa4706e|1668580570|1668579876");
             post.setHeader("Content-Type", "application/json;charset=utf-8");
             post.setHeader("Host", "cloudpaygateway.59wanmei.com:8087");
-            // 设置请求体
-            String json = "{\"timestamp\":\"2022-11-16 14:35:33\",\"method\":\"samllProgramGetRoomState\",\"bizcontent\":\"{\\\"payproid\\\":953,\\\"schoolcode\\\":\\\"1402\\\",\\\"roomverify\\\":\\\"2-1--3-7301\\\",\\\"businesstype\\\":2}\",\"sourceId\":2}";
+
+            String json = "{\"timestamp\":\"2022-11-16 14:35:33\",\"method\":\"samllProgramGetRoomState\",\"bizcontent\":\"{\\\"payproid\\\":953,\\\"schoolcode\\\":\\\"1402\\\",\\\"roomverify\\\":\\\"" + roomVerify + "\\\",\\\"businesstype\\\":2}\",\"sourceId\":2}";
             post.setEntity(new StringEntity(json));
-            // 执行请求并获取响应
+
             try (CloseableHttpResponse response = httpClient.execute(post)) {
                 result = EntityUtils.toString(response.getEntity());
             } catch (IOException e) {

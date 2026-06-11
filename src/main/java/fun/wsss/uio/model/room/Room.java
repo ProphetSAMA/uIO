@@ -18,5 +18,5 @@ public class Room {
     private Integer id;
     private Integer floorId;
     private String name;
+    private String roomNumber;
 }
-

@@ -20,6 +20,6 @@ public class Building {
     @TableId
     private Integer id;
     private String name;
-
+    private Integer mainArea;
+    private Integer subArea;
 }
-

@@ -24,8 +24,13 @@ export const usePowerStore = defineStore('powerStore', {
         },
         async fetchApiValue() {
             try {
-                // Fetch API value
-                const response = await fetch('127.0.0.1/api/latest-power');
+                // 从 sessionStorage 获取 userId
+                const userId = sessionStorage.getItem('userId');
+                if (!userId) {
+                    throw new Error('用户未登录');
+                }
+                // Fetch API value with userId
+                const response = await fetch(`127.0.0.1/api/latest-power?userId=${userId}`);
                 this.apiValue = await response.json();
             } catch (error) {
                 this.errorMessages = error.message;

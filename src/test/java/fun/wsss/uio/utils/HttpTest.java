@@ -5,9 +5,10 @@ class HttpTest {
         @org.junit.jupiter.api.Test
         void get() {
             Http http = new Http();
-            System.out.println(http.response);
+            String response = http.sendPostRequest("2-1--3-7301");
+            System.out.println(response);
             Json json = new Json();
-            json.processResponse(http);
+            json.processResponse(response);
             System.out.println(json.quantity);
         }
 

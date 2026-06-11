@@ -1,7 +1,13 @@
 package fun.wsss.uio.utils;
 
+import fun.wsss.uio.mapper.room.BuildingMapper;
+import fun.wsss.uio.mapper.room.RoomMapper;
+import fun.wsss.uio.mapper.user.UserMapper;
 import fun.wsss.uio.mapper.PowerMapper;
 import fun.wsss.uio.model.Power;
+import fun.wsss.uio.model.room.Building;
+import fun.wsss.uio.model.room.Room;
+import fun.wsss.uio.model.user.User;
 import fun.wsss.uio.service.power.PowerService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,13 +29,20 @@ import java.util.List;
 public class ScheduledTasks {
     private static final Logger logger = LogManager.getLogger(ScheduledTasks.class);
 
-
     private final PowerService powerService;
     private final LocalDateTime startTime;
 
     @Autowired
     private PowerMapper powerMapper;
 
+    @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
+    private RoomMapper roomMapper;
+
+    @Autowired
+    private BuildingMapper buildingMapper;
 
     public ScheduledTasks(PowerService powerService) {
         this.powerService = powerService;
@@ -38,11 +51,24 @@ public class ScheduledTasks {
 
     /**
      * 定时插入数据，每小时执行一次
+     * 遍历所有用户，为每个用户的房间插入电量数据
      */
-    @Scheduled(cron = "0 0 * * * ?") // 每小时执行一次
+    @Scheduled(cron = "0 0 * * * ?")
     public void insertLastedPowerValue() {
-        powerService.insertPowerValue();
-        logger.info("定时任务执行了");
+        List<User> users = userMapper.getAllUser();
+        for (User user : users) {
+            Room room = roomMapper.selectById(user.getRoomId());
+            Building building = buildingMapper.selectById(user.getBuildingId());
+            if (room != null && building != null) {
+                try {
+                    String roomVerify = RoomVerifyUtil.generateRoomVerify(building, room);
+                    powerService.insertPowerValue(roomVerify);
+                    logger.info("定时任务执行成功 - 用户: {}, 房间: {}", user.getUsername(), roomVerify);
+                } catch (Exception e) {
+                    logger.error("定时任务执行失败 - 用户: {}, 错误: {}", user.getUsername(), e.getMessage(), e);
+                }
+            }
+        }
     }
 
     /**
@@ -51,9 +77,8 @@ public class ScheduledTasks {
      * @return 刷新的数据
      */
     @CachePut(value = "allPowerValue")
-    @Scheduled(cron = "0 0 * * * ?") // 每小时执行一次 延后3秒执行
+    @Scheduled(cron = "0 0 * * * ?")
     public List<Power> refreshAllPowerValue() {
-        // 检查是否已经过了初始延迟时间
         int start = 3;
         if (Duration.between(startTime, LocalDateTime.now()).getSeconds() < start) {
             logger.info("初始延迟时间未到，跳过执行");
